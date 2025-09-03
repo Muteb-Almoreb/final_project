@@ -1,12 +1,11 @@
 package org.example.trucksy.Api;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApiResponse {
     private String message;
 }
