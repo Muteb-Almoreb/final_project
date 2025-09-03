@@ -7,43 +7,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Set;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FoodTruck {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
-
+    private Double price;
     private String description;
+    private Boolean isAvailable;
+    private Boolean isDiscounted;
+    private LocalDate creationDate;
+    private LocalDate updateDate;
 
-    private String category;
 
-    private Double latitude;
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "item")
+    @PrimaryKeyJoinColumn
+    private Discount discount;
 
-    private Double longitude;
-
-    private String status;
-
-    @ManyToOne
+    @ManyToMany
     @JsonIgnore
-    private Owner owner;
-
-
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
     private Set<Order> orders;
-
-
-    //todo check the relation
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
-    @JsonIgnore
-    private Set<Review> reviews;
-
 }

@@ -26,6 +26,10 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @PrimaryKeyJoinColumn
-    private FoodTruckOwner foodTruckOwner;
+    private Owner owner;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @PrimaryKeyJoinColumn
+    private Client client;
 
 }

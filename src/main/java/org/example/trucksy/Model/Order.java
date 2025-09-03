@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -14,36 +15,28 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FoodTruck {
+@Table(name = "orders")
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
-
-    private String description;
-
-    private String category;
-
-    private Double latitude;
-
-    private Double longitude;
-
     private String status;
+
+    private LocalDate orderDate;
+
+    private Double totalPrice;
+
 
     @ManyToOne
     @JsonIgnore
-    private Owner owner;
+    private Client client;
 
-
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
-    private Set<Order> orders;
-
-
-    //todo check the relation
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+    @ManyToOne
     @JsonIgnore
-    private Set<Review> reviews;
+    private FoodTruck foodTruck;
 
+    @ManyToMany(mappedBy = "orders")
+    private Set<Item> items;
 }

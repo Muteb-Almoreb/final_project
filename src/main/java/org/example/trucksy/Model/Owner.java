@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class FoodTruckOwner {
+public class Owner {
 
     @Id
     private Integer id;
@@ -32,6 +31,6 @@ public class FoodTruckOwner {
     private User user;
 
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "owner")
     private Set<FoodTruck> foodTrucks;
 }
