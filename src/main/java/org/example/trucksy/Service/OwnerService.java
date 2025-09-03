@@ -18,26 +18,26 @@ public class OwnerService {
     private final FoodTruckRepository foodTruckRepository;
     private final AuthRepository authRepository;
 
-//    public void registerOwner(OwnerDTO OwnerDTO) { // todo
-//        User user = new User();
-//        user.setUsername(OwnerDTO.getUsername());
-//        user.setPassword(OwnerDTO.getPassword());
-//        user.setEmail(OwnerDTO.getEmail());
-//        user.setPhoneNumber(OwnerDTO.getPhone());
-//        user.setRole("Owner");
-//        authRepository.save(user);
-//
-//        Owner owner = new Owner();
-//        owner.setUser(user);
-//        ownerRepository.save(owner);
-//
-//
-//        FoodTruck foodTruck = new FoodTruck();
-//        foodTruck.setName(OwnerDTO.getName());
-//        foodTruck.setDescription(OwnerDTO.getDescription());
-//        foodTruck.setCategory(OwnerDTO.getCategory());
-//        foodTruck.setStatus("Closed");
-//        foodTruck.setOwner(owner);
-//        foodTruckRepository.save(foodTruck);
-//    }
+    public void registerOwner(OwnerDTO OwnerDTO) { // todo
+        User user = new User();
+        user.setUsername(OwnerDTO.getUsername());
+        user.setPassword(OwnerDTO.getPassword());
+        user.setEmail(OwnerDTO.getEmail());
+        user.setPhoneNumber(OwnerDTO.getPhone());
+        user.setRole("OWNER");
+        authRepository.save(user);
+
+        Owner owner = new Owner();
+        owner.setUser(user);
+        ownerRepository.save(owner);
+
+
+        FoodTruck foodTruck = new FoodTruck();
+        foodTruck.setName(OwnerDTO.getName());
+        foodTruck.setDescription(OwnerDTO.getDescription());
+        foodTruck.setCategory(OwnerDTO.getCategory());
+        foodTruck.setStatus("Closed");
+        foodTruck.setOwner(owner);
+        foodTruckRepository.save(foodTruck);
+    }
 }

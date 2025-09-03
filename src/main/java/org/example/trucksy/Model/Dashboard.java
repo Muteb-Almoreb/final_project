@@ -28,6 +28,7 @@ public class Dashboard {
     // todo this is pattern 'morning , night '
     private String peakOrders;
 
+    // todo check if we want this object of item
     private String topSellingItems;
 
     private LocalDate updateDate;

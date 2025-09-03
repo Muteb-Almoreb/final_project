@@ -24,6 +24,7 @@ public class Review {
     private LocalDate createdDate; // todo check if we need time
 
 
+    //todo check the relation if user can review more than one or not
     @ManyToOne
     private Client client;
 

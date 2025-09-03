@@ -19,10 +19,6 @@ public class Owner {
     @Id
     private Integer id;
 
-    private String businessName;
-
-    private String iban;
-
     private boolean subscribed;
 
     @OneToOne

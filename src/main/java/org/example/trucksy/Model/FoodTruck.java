@@ -46,4 +46,7 @@ public class FoodTruck {
     @JsonIgnore
     private Set<Review> reviews;
 
+
+// todo add relation with item and dashboard
+
 }
