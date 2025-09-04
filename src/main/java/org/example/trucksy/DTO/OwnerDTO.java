@@ -13,8 +13,8 @@ public class OwnerDTO {
     private String password;
     private String phone;
 
-    // this is for foodTruck
-    private String name;
-    private String description;
-    private String category;
+//    // this is for foodTruck
+//    private String name;
+//    private String description;
+//    private String category;
 }

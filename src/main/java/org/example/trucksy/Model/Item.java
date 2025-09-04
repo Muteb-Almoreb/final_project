@@ -37,4 +37,8 @@ public class Item {
     @ManyToMany
     @JsonIgnore
     private Set<Order> orders;
+
+    @ManyToOne
+    @JsonIgnore
+    private FoodTruck foodTruck;
 }

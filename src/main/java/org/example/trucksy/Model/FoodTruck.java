@@ -37,16 +37,19 @@ public class FoodTruck {
     private Owner owner;
 
 
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
     private Set<Order> orders;
 
 
-    //todo check the relation
-    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+    // todo check the relation
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
     @JsonIgnore
     private Set<Review> reviews;
 
 
-// todo add relation with item and dashboard
+    // todo add relation with item and dashboard
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+    @PrimaryKeyJoinColumn
+    private Set<Item> item;
 
 }

@@ -17,6 +17,7 @@ public class ClientService {
     private final AuthRepository authRepository;
 
     public void registerClient(ClientDTO clientDTO) {
+        System.out.println(clientDTO.getEmail());
         User user = new User();
         user.setUsername(clientDTO.getUsername());
         user.setPassword(clientDTO.getPassword()); // todo make it Encrypt
