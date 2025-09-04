@@ -49,4 +49,9 @@ public class FoodTruck {
 
 // todo add relation with item and dashboard
 
+    //Add relation with Item
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
+    @JsonIgnore
+    private Set<Item> items;
+
 }

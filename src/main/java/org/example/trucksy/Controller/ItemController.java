@@ -18,46 +18,62 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping("/get")
-    public List<Item> getAllItems() {
-        return itemService.getAllItems();
+    @GetMapping("/get/{ownerId}/{truckId}")
+    public ResponseEntity<?> getItems(@PathVariable Integer ownerId,
+                                                      @PathVariable Integer truckId) {
+        return ResponseEntity.ok(itemService.getItemsByFoodTruck(ownerId, truckId));
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addItem(@RequestBody ItemDTO dto) {
-        itemService.addItem(dto);
-        return ResponseEntity.status(200).body(new ApiResponse("Item added successfully"));
+
+    @PostMapping("/add/{ownerId}/{truckId}")
+    public ResponseEntity<ApiResponse> addItem(@PathVariable Integer ownerId,
+                                               @PathVariable Integer truckId,
+                                               @RequestBody ItemDTO dto) {
+        itemService.addItemToFoodTruck(ownerId, truckId, dto);
+        return ResponseEntity.ok(new ApiResponse("Item added to food truck"));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateItem(@PathVariable Integer id, @RequestBody ItemDTO dto) {
-        itemService.updateItem(id, dto);
-        return ResponseEntity.status(200).body(new ApiResponse("Item updated successfully"));
+    @PutMapping("/update/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<ApiResponse> updateItem(@PathVariable Integer ownerId,
+                                                  @PathVariable Integer truckId,
+                                                  @PathVariable Integer itemId,
+                                                  @RequestBody ItemDTO dto) {
+        itemService.updateItemInFoodTruck(ownerId, truckId, itemId, dto);
+        return ResponseEntity.ok(new ApiResponse("Item updated"));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public  ResponseEntity<?> deleteItem(@PathVariable Integer id) {
-        itemService.deleteItem(id);
-        return ResponseEntity.status(200).body(new ApiResponse("Item deleted successfully"));
+    @DeleteMapping("/delete/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<ApiResponse> deleteItem(@PathVariable Integer ownerId,
+                                                  @PathVariable Integer truckId,
+                                                  @PathVariable Integer itemId) {
+        itemService.deleteItemFromFoodTruck(ownerId, truckId, itemId);
+        return ResponseEntity.ok(new ApiResponse("Item deleted"));
     }
 
     // عمليات إضافية
-    @PutMapping("/setAvailable/{id}")
-    public ResponseEntity<?> setAvailable(@PathVariable Integer id) {
-        itemService.setAvailable(id);
-        return ResponseEntity.status(200).body( new ApiResponse("Item availability updated it been true"));
+    @PutMapping("/setAvailable/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<?> setAvailable(@PathVariable Integer ownerId,
+                                          @PathVariable Integer truckId,
+                                          @PathVariable Integer itemId) {
+        itemService.setAvailable(ownerId , truckId , itemId);
+        return ResponseEntity.status(200).body( new ApiResponse("Item availability updated ,it been true"));
     }
 
-    @PutMapping("/setNotAvailable/{id}")
-    public ResponseEntity<?> setNotAvailable(@PathVariable Integer id) {
-        itemService.setNotAvailable(id);
-        return ResponseEntity.status(200).body( new ApiResponse("Item availability updated it been false"));
+    @PutMapping("/setNotAvailable/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<?> setNotAvailable(@PathVariable Integer ownerId,
+                                             @PathVariable Integer truckId,
+                                             @PathVariable Integer itemId) {
+        itemService.setNotAvailable(ownerId , truckId , itemId);
+        return ResponseEntity.status(200).body( new ApiResponse("Item availability updated , it been false"));
     }
 
-    @PutMapping("/update-price/{id}/{newPrice}")
-    public ResponseEntity<?>  updatePrice(@PathVariable Integer id, @PathVariable Double newPrice) {
-        itemService.updatePrice(id, newPrice);
-        return ResponseEntity.status(200).body(new ApiResponse("Item price updated"));
+    @PutMapping("/price/{ownerId}/{truckId}/{itemId}/{newPrice}")
+    public ResponseEntity<ApiResponse> updatePrice(@PathVariable Integer ownerId,
+                                                   @PathVariable Integer truckId,
+                                                   @PathVariable Integer itemId,
+                                                   @PathVariable Double newPrice) {
+        itemService.updatePrice(ownerId, truckId, itemId, newPrice);
+        return ResponseEntity.ok(new ApiResponse("Item price updated"));
     }
 
 

@@ -37,4 +37,9 @@ public class Item {
     @ManyToMany
     @JsonIgnore
     private Set<Order> orders;
+
+
+    @ManyToOne
+    @JoinColumn(name = "food_truck_id", nullable = false) // ينشئ عمود foreign key
+    private FoodTruck foodTruck;
 }
