@@ -51,4 +51,9 @@ public class FoodTruck {
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
     private Set<Item> item;
 
+    //Add relation with Item
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
+    @JsonIgnore
+    private Set<Item> items;
+
 }
