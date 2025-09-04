@@ -28,8 +28,6 @@ public class ClientService {
         Client client = new Client();
         client.setUser(user);
         clientRepository.save(client);
-        // todo complete the Client Model here
-
     }
 
 
