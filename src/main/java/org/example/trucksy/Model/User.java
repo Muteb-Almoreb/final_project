@@ -32,4 +32,8 @@ public class User {
     @PrimaryKeyJoinColumn
     private Client client;
 
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "user")
+    @PrimaryKeyJoinColumn
+    private BankCard bankCard;
+
 }

@@ -30,7 +30,7 @@ public class FoodTruck {
 
     private Double longitude;
 
-    private String status;
+    private String status;//open or close
 
     @ManyToOne
     @JsonIgnore
@@ -49,7 +49,6 @@ public class FoodTruck {
 
     // todo add relation with item and dashboard
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
-    @PrimaryKeyJoinColumn
     private Set<Item> item;
 
 }

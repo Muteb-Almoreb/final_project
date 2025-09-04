@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -39,6 +40,10 @@ public class Order {
     @JsonIgnore
     private FoodTruck foodTruck;
 
-    @ManyToMany(mappedBy = "orders")
-    private Set<Item> items;
+//    //the Relation Edited to one to many instead of many to many
+//    @OneToMany(cascade = CascadeType.ALL,mappedBy = "order")
+//    private Set<Item> items;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "order",orphanRemoval = true)
+    private Set<OrderLine> lines = new HashSet<>();
+
 }

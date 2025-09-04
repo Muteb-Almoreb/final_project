@@ -7,14 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OwnerDTO {
-    private String username;
-    private String email;
-    private String password;
-    private String phone;
-
-    // this is for foodTruck
+public class FoodTruckSummaryDtoOut {
+    private Integer id;
     private String name;
-    private String description;
     private String category;
+    private String status;
 }
