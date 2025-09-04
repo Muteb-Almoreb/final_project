@@ -24,6 +24,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
+
+    //todo make it select by path variable instead of Dto then add it to the dto by code.
     public void addOrder(Integer clientId, OrderDtoIn orderDtoIn) {
         FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(orderDtoIn.getFoodTruckId());
         if(foodTruck == null )

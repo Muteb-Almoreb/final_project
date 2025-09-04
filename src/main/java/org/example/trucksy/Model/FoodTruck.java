@@ -30,7 +30,7 @@ public class FoodTruck {
 
     private Double longitude;
 
-    private String status;//open or close
+    private String status = "OPEN";//open or close
 
     @ManyToOne
     @JsonIgnore
