@@ -34,4 +34,10 @@ public class FoodTruckController {
         foodTruckService.deleteFoodTruck(owner_id , truck_id);
         return ResponseEntity.status(200).body(new ApiResponse("Successfully deleted food truck"));
     }
+
+
+    @GetMapping("/get-all-trucks-by-owner_id/{owner_id}")
+    public ResponseEntity<?> getAllFoodTrucksByOwnerId(@PathVariable Integer owner_id) {
+        return ResponseEntity.status(200).body(foodTruckService.getAllFoodTrucksByOwnerId(owner_id));
+    }
 }

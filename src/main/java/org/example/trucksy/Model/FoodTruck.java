@@ -30,20 +30,20 @@ public class FoodTruck {
 
     private Double longitude;
 
-    private String status = "OPEN";//open or close
+    private String status;
 
     @ManyToOne
     @JsonIgnore
     private Owner owner;
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
     private Set<Order> orders;
 
 
-    // todo check the relation
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
-    @JsonIgnore
+    //todo check the relation
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+
     private Set<Review> reviews;
 
 

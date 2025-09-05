@@ -9,6 +9,7 @@ import org.example.trucksy.Repository.FoodTruckRepository;
 import org.example.trucksy.Repository.OwnerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,6 +29,7 @@ public class FoodTruckService {
         foodTruck.setCategory(foodTruckDTO.getCategory());
         foodTruck.setLatitude(foodTruckDTO.getLatitude());
         foodTruck.setLongitude(foodTruckDTO.getLongitude());
+        foodTruck.setStatus("CLOSED");
         foodTruck.setOwner(owner);
         foodTruck.setStatus("OPEN");//by default open
         foodTruckRepository.save(foodTruck);
@@ -67,5 +69,16 @@ public class FoodTruckService {
             throw new ApiException("You don't own this food truck");
         }
         foodTruckRepository.delete(foodTruck);
+    }
+
+
+    // Ex
+
+    public List<FoodTruck> getAllFoodTrucksByOwnerId(Integer owner_id) {
+        Owner owner = ownerRepository.findOwnerById(owner_id);
+        if(owner == null){
+            throw new ApiException("Owner not found");
+        }
+        return foodTruckRepository.findFoodTruckByOwnerId(owner_id);
     }
 }

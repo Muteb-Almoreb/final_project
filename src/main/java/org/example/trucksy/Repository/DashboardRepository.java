@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DashboardRepository extends JpaRepository<Dashboard, Integer> {
+
+    Dashboard findDashboardById(Integer id);
 }

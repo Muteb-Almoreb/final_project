@@ -12,9 +12,4 @@ public class OwnerDTO {
     private String email;
     private String password;
     private String phone;
-
-    // this is for foodTruck
-    private String name;
-    private String description;
-    private String category;
 }

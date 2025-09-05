@@ -1,5 +1,6 @@
 package org.example.trucksy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +31,7 @@ public class Review {
 
 
     @ManyToOne
+    @JsonIgnore
     private FoodTruck foodTruck;
-
 
 }

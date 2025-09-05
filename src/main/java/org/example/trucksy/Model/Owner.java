@@ -29,4 +29,9 @@ public class Owner {
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "owner")
     private Set<FoodTruck> foodTrucks;
+
+
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "owner")
+    @PrimaryKeyJoinColumn
+    private Dashboard dashboard;
 }
