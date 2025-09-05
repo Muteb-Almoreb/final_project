@@ -24,10 +24,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-
-    //todo make it select by path variable instead of Dto then add it to the dto by code.
-    public void addOrder(Integer clientId, OrderDtoIn orderDtoIn) {
-        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(orderDtoIn.getFoodTruckId());
+//todo make it select by path variable instead of Dto then add it to the dto by code.
+    public void addOrder(Integer clientId, Integer foodTruckId, Set<LiensDtoIn> liensDtoIns) {
+        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruckId);
         if(foodTruck == null )
             throw new ApiException("FoodTruck not found");
 
@@ -47,11 +46,11 @@ public class OrderService {
         if(user.getBankCard() == null)
             throw new ApiException("Client does not have Bank Card");
 
-        if (orderDtoIn.getLiensDtoIns() == null || orderDtoIn.getLiensDtoIns().isEmpty())
+        if (liensDtoIns == null || liensDtoIns.isEmpty())
             throw new ApiException("Order must contain at least one item");
 
         //check the items id
-        Set<LiensDtoIn> liensDtoIn = orderDtoIn.getLiensDtoIns();// a set of items and it's quantity
+        Set<LiensDtoIn> liens = liensDtoIns;// a set of items and it's quantity
 
         Order order = new Order();
         order.setStatus("PLACED");//it will be preparing if the client paid
@@ -62,7 +61,7 @@ public class OrderService {
         Double totalPrice = 0.0;//سعر الطلب
 
         // ===== this loop is designed to merge the duplicated items =====
-        for(LiensDtoIn lien : liensDtoIn){
+        for(LiensDtoIn lien : liens){
             Integer qty = lien.getQuantity();
             if (qty == null || qty <= 0)
                 throw new ApiException("Quantity must be > 0");
@@ -72,8 +71,14 @@ public class OrderService {
                 throw new ApiException("one of the items id is not found");
             }
             if(Boolean.FALSE.equals(item.getIsAvailable())){
-                throw new ApiException("one of the items is not available: " + item.getName());
+                throw new ApiException("one of the items is not available right now");
             }
+
+            // تحقق أن هذا الـ item يتبع نفس الـ FoodTruck القادم من الهيدر/الباث
+            if (item.getFoodTruck() == null || item.getFoodTruck().getId() == null
+                    || !item.getFoodTruck().getId().equals(foodTruckId)) {
+                throw new ApiException("one of the items does not belong to the selected FoodTruck");
+            }//مثلا طالب شاهي من فود ترك يبيع برقر
 
             // if any order was duplicated this line will detect it .
             OrderLine existing = null;
@@ -101,7 +106,6 @@ public class OrderService {
             }
         }
 
-
         order.setTotalPrice(totalPrice);
         order.setLines(lines);
         //todo check payment from Moyasar and then continue the Order (assume it's paid) -> another end point take 2 param (client id and Order id) then go to payment process
@@ -113,7 +117,7 @@ public class OrderService {
         order.setClient(client);
         order.setFoodTruck(foodTruck);
 
-         orderRepository.save(order);
+        orderRepository.save(order);
     }
 
 
@@ -127,13 +131,13 @@ public class OrderService {
         List<OrderDtoOut> result = new ArrayList<>();
 
         for (Order o : orders) {
-            OrderDtoOut dto = mapOrderToDtoOut(o);
+            // نعرض العميل فقط (client) ونخفي معلومات الفود ترك
+            OrderDtoOut dto = mapOrderToDtoOut(o, /*includeClient*/ true, /*includeFoodTruck*/ false);
             result.add(dto);
         }
 
         return result;
     }
-
 
     @Transactional(readOnly = true)
     public List<OrderDtoOut> getOrdersForClientDto(Integer clientId) {
@@ -144,13 +148,13 @@ public class OrderService {
         List<OrderDtoOut> result = new ArrayList<>();
 
         for (Order o : orders) {
-            OrderDtoOut dto = mapOrderToDtoOut(o);
+            // نعرض الفود ترك فقط ونخفي معلومات العميل
+            OrderDtoOut dto = mapOrderToDtoOut(o, /*includeClient*/ false, /*includeFoodTruck*/ true);
             result.add(dto);
         }
 
         return result;
     }
-
 
     @Transactional(readOnly = true)
     public OrderDtoOut getOrderForFoodTruckDto(Integer foodTruckId, Integer orderId) {
@@ -160,43 +164,52 @@ public class OrderService {
         Order order = orderRepository.findByIdAndFoodTruck_Id(orderId, foodTruckId)
                 .orElseThrow(() -> new ApiException("Order not found for this FoodTruck"));
 
-        return mapOrderToDtoOut(order);
+        // نعرض العميل فقط ونخفي الفود ترك
+        return mapOrderToDtoOut(order, /*includeClient*/ true, /*includeFoodTruck*/ false);
     }
 
-    //Helper
-    private OrderDtoOut mapOrderToDtoOut(Order order) {
+    //Helper methods
+    private OrderDtoOut mapOrderToDtoOut(Order order, boolean includeClient, boolean includeFoodTruck) {
         OrderDtoOut dto = new OrderDtoOut();
         dto.setId(order.getId());
         dto.setStatus(order.getStatus());
         dto.setTotalPrice(order.getTotalPrice());
 
         // ----- ClientSummaryDtoOut -----
-        ClientSummaryDtoOut clientDto = null;
-        Client client = order.getClient();
-        if (client != null) {
-            clientDto = new ClientSummaryDtoOut();
-            clientDto.setId(client.getId());
+        if (includeClient) {
+            ClientSummaryDtoOut clientDto = null;
+            Client client = order.getClient();
+            if (client != null) {
+                clientDto = new ClientSummaryDtoOut();
+                clientDto.setId(client.getId());
 
-            // MapsId: بيانات المستخدم داخل client.getUser()
-            User u = client.getUser();
-            if (u != null) {
-                clientDto.setUsername(u.getUsername());
-                clientDto.setEmail(u.getEmail());
-                clientDto.setPhone(u.getPhoneNumber());
+                // MapsId: بيانات المستخدم داخل client.getUser()
+                User u = client.getUser();
+                if (u != null) {
+                    clientDto.setUsername(u.getUsername());
+                    clientDto.setEmail(u.getEmail());
+                    clientDto.setPhone(u.getPhoneNumber());
+                }
             }
+            dto.setClient(clientDto);
+        } else {
+            dto.setClient(null);
         }
-        dto.setClient(clientDto);
 
         // ----- FoodTruckSummaryDtoOut -----
-        FoodTruckSummaryDtoOut truckDto = null;
-        if (order.getFoodTruck() != null) {
-            truckDto = new FoodTruckSummaryDtoOut();
-            truckDto.setId(order.getFoodTruck().getId());
-            truckDto.setName(order.getFoodTruck().getName());
-            truckDto.setCategory(order.getFoodTruck().getCategory());
-            truckDto.setStatus(order.getFoodTruck().getStatus());
+        if (includeFoodTruck) {
+            FoodTruckSummaryDtoOut truckDto = null;
+            if (order.getFoodTruck() != null) {
+                truckDto = new FoodTruckSummaryDtoOut();
+                truckDto.setId(order.getFoodTruck().getId());
+                truckDto.setName(order.getFoodTruck().getName());
+                truckDto.setCategory(order.getFoodTruck().getCategory());
+                truckDto.setStatus(order.getFoodTruck().getStatus());
+            }
+            dto.setFoodTruck(truckDto);
+        } else {
+            dto.setFoodTruck(null);
         }
-        dto.setFoodTruck(truckDto);
 
         // ----- Lines -> List<OrderLineDtoOut> -----
         List<OrderLineDtoOut> lineDtos = new ArrayList<>();

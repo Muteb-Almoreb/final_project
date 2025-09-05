@@ -35,14 +35,6 @@ public class OwnerService {
         owner.setSubscribed(false);
         owner.setUser(user);
         ownerRepository.save(owner);
-
-        FoodTruck foodTruck = new FoodTruck();
-        foodTruck.setName(ownerDTO.getName());
-        foodTruck.setDescription(ownerDTO.getDescription());
-        foodTruck.setCategory(ownerDTO.getCategory());
-        foodTruck.setStatus("CLOSED");
-        foodTruck.setOwner(owner);
-        foodTruckRepository.save(foodTruck);
     }
 
 

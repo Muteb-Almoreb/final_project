@@ -3,6 +3,7 @@ package org.example.trucksy.Controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
+import org.example.trucksy.DTO.LiensDtoIn;
 import org.example.trucksy.DTO.OrderDtoIn;
 import org.example.trucksy.DTO.OrderDtoOut;
 import org.example.trucksy.Service.OrderService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -18,10 +20,11 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping("/add/{clientId}") // todo after Security added remove clientId from the path
+    @PostMapping("/add/{clientId}/{foodTruckId}") // todo after Security added remove clientId from the path
     public ResponseEntity<?> addOrder(@PathVariable Integer clientId,
-                                      @Valid @RequestBody OrderDtoIn orderDtoIn) {
-        orderService.addOrder(clientId, orderDtoIn);
+                                      @PathVariable Integer foodTruckId,
+                                      @Valid @RequestBody Set<LiensDtoIn> liensDtoIn) {
+        orderService.addOrder(clientId, foodTruckId,liensDtoIn);
         return ResponseEntity.status(200).body(new ApiResponse("Order placed successfully"));
     }
 
