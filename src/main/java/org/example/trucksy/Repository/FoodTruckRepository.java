@@ -11,4 +11,7 @@ public interface FoodTruckRepository extends JpaRepository<FoodTruck, Integer> {
     FoodTruck findFoodTruckById(Integer id);
 
     List<FoodTruck> findFoodTruckByOwnerId(Integer id);
+
+    List<FoodTruck> findFoodTruckByCategory(String category);
+
 }

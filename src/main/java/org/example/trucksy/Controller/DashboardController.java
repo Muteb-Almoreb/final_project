@@ -23,4 +23,9 @@ public class DashboardController {
     public ResponseEntity<?> getOwnerDashboard(@PathVariable Integer owner_id){
         return ResponseEntity.status(200).body(dashboardService.getOwnerDashboard(owner_id));
     }
+
+    @GetMapping("/get-all-order-by-foodTruck/{foodTruck_id}")
+    public ResponseEntity<?> getAllOrderByFoodTruck(@PathVariable Integer foodTruck_id){
+       return ResponseEntity.status(200).body(dashboardService.getOrdersByFoodTruck(foodTruck_id));
+    }
 }

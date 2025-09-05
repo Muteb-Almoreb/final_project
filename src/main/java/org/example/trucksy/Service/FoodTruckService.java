@@ -3,6 +3,7 @@ package org.example.trucksy.Service;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
 import org.example.trucksy.DTO.FoodTruckDTO;
+import org.example.trucksy.DTO.FoodTruckSummaryDtoOut;
 import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Model.Owner;
 import org.example.trucksy.Repository.FoodTruckRepository;
@@ -80,5 +81,19 @@ public class FoodTruckService {
             throw new ApiException("Owner not found");
         }
         return foodTruckRepository.findFoodTruckByOwnerId(owner_id);
+    }
+
+
+    public List<FoodTruckDTO> getAllFoodTruckByCategory(String category) {
+        List<FoodTruck> foodTrucks = foodTruckRepository.findFoodTruckByCategory(category);
+
+        return foodTrucks.stream()
+                .map(r -> new FoodTruckDTO(
+                        r.getName(),
+                        r.getDescription(),
+                        r.getCategory(),
+                        r.getLatitude(),
+                        r.getLongitude()
+                )).toList();
     }
 }

@@ -7,10 +7,7 @@ import org.example.trucksy.DTOOut.TruckReviewsDTOOut;
 import org.example.trucksy.Model.Client;
 import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Model.Review;
-import org.example.trucksy.Repository.AuthRepository;
-import org.example.trucksy.Repository.ClientRepository;
-import org.example.trucksy.Repository.FoodTruckRepository;
-import org.example.trucksy.Repository.ReviewRepository;
+import org.example.trucksy.Repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +20,7 @@ public class ReviewService {
     private final AuthRepository authRepository;
     private final FoodTruckRepository foodTruckRepository;
     private final ClientRepository clientRepository;
+    public final OrderRepository orderRepository;
 
     public void assignReview(Integer client_id,Integer foodTruck_id, TruckReviewsDTOOut truckReviewsDTOOut) {
        Client client = clientRepository.findClientById(client_id);
@@ -32,6 +30,10 @@ public class ReviewService {
         FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
         if (foodTruck == null) {
             throw new ApiException("FoodTruck not found");
+        }
+        boolean hasOrder = orderRepository.existsByClientIdAndFoodTruckId(client_id,foodTruck_id);
+        if (!hasOrder) {
+            throw new ApiException("You can't assign a review to a food truck before trying it");
         }
         Review review = new Review();
         review.setRating(truckReviewsDTOOut.getRating());
