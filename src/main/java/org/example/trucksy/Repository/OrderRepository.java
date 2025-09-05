@@ -28,6 +28,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
    from Order o
    where o.foodTruck.owner.id = :ownerUserId
 """)
-    long countOrdersByOwner(@Param("ownerUserId") Integer ownerUserId);
+    Integer countOrdersByOwner(@Param("ownerUserId") Integer ownerUserId);
+
+    boolean existsByClientIdAndFoodTruckId(Integer clientId, Integer foodTruckId);
+
+    @Query("""
+       select count(o)
+       from Order o
+       where o.foodTruck.owner.id = :ownerId
+         and o.status = 'COMPLETED'
+    """)
+    Integer countCompletedOrdersByOwner(@Param("ownerId") Integer ownerId);
 
 }

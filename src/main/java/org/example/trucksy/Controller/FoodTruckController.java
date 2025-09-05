@@ -40,4 +40,9 @@ public class FoodTruckController {
     public ResponseEntity<?> getAllFoodTrucksByOwnerId(@PathVariable Integer owner_id) {
         return ResponseEntity.status(200).body(foodTruckService.getAllFoodTrucksByOwnerId(owner_id));
     }
+
+    @GetMapping("/get-foodTrucks-by-category/{category}")
+    public ResponseEntity<?> getAllFoodTrucksByCategory(@PathVariable String category) {
+        return ResponseEntity.status(200).body(foodTruckService.getAllFoodTruckByCategory(category));
+    }
 }

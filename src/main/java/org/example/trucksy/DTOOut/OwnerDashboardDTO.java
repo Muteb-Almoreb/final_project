@@ -14,6 +14,7 @@ public class OwnerDashboardDTO {
     private String ownerName;
     private Integer totalOrders;
     private Double totalRevenue;
+    private Integer totalCompletedOrders;
     private Integer predictedOrders;
     private String peakOrders;
     private String topSellingItems;

@@ -24,7 +24,10 @@ public class Dashboard {
 
     private Integer totalOrders;
 
+    private Integer totalCompletedOrders;
+
     private Double totalRevenue;
+
 
     private Integer predictedOrders;
 
