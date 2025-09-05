@@ -21,7 +21,7 @@ public class User {
     private String password;
     private String email;
     private String phoneNumber;
-    private String role;
+    private String role;//CLIENT , OWNER , ADMIN
 
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
@@ -31,5 +31,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @PrimaryKeyJoinColumn
     private Client client;
+
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "user")
+    @PrimaryKeyJoinColumn
+    private BankCard bankCard;
 
 }

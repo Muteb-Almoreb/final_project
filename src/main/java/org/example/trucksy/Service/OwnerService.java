@@ -29,19 +29,12 @@ public class OwnerService {
         user.setEmail(ownerDTO.getEmail());
         user.setPhoneNumber(ownerDTO.getPhone());
         user.setRole("OWNER");
+        authRepository.save(user);
 
         Owner owner = new Owner();
         owner.setSubscribed(false);
         owner.setUser(user);
         ownerRepository.save(owner);
-
-        FoodTruck foodTruck = new FoodTruck();
-        foodTruck.setName(ownerDTO.getName());
-        foodTruck.setDescription(ownerDTO.getDescription());
-        foodTruck.setCategory(ownerDTO.getCategory());
-        foodTruck.setStatus("CLOSED");
-        foodTruck.setOwner(owner);
-        foodTruckRepository.save(foodTruck);
     }
 
 

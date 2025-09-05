@@ -31,6 +31,7 @@ public class FoodTruckService {
         foodTruck.setLongitude(foodTruckDTO.getLongitude());
         foodTruck.setStatus("CLOSED");
         foodTruck.setOwner(owner);
+        foodTruck.setStatus("OPEN");//by default open
         foodTruckRepository.save(foodTruck);
     }
 

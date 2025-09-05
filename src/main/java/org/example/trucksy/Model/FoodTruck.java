@@ -47,6 +47,13 @@ public class FoodTruck {
     private Set<Review> reviews;
 
 
-// todo add relation with item and dashboard
+    // todo add relation with item and dashboard
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
+    private Set<Item> item;
+
+    //Add relation with Item
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "foodTruck")
+    @JsonIgnore
+    private Set<Item> items;
 
 }

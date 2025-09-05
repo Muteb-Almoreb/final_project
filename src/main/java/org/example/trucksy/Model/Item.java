@@ -34,7 +34,13 @@ public class Item {
     @PrimaryKeyJoinColumn
     private Discount discount;
 
-    @ManyToMany
+    //the relation here will be undirect to Order by using liens.
+//    //the Relation Edited to many to one instead of many to many
+//    @ManyToOne
+//    @JsonIgnore
+//    private Order orders;
+
+    @ManyToOne
     @JsonIgnore
-    private Set<Order> orders;
+    private FoodTruck foodTruck;
 }
