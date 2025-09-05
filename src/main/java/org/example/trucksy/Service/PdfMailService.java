@@ -43,6 +43,7 @@ public class PdfMailService {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             // multipart=true to allow attachments
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setFrom("trucksy8@gmail.com");
             helper.setTo(to);
             if (cc != null && cc.length > 0) helper.setCc(cc);
             helper.setSubject(subject);
