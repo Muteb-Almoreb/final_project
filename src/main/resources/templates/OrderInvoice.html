@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Trucksy - Order Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #ddd;
+        }
+
+        .invoice-header {
+            background: linear-gradient(135deg, #ff6b35, #f94a29);
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+
+        .logo-company {
+            width: 60%;
+        }
+
+        .logo {
+            width: 60px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            border: 2px solid white;
+            border-radius: 12px;
+            display: inline-block;
+            text-align: center;
+            line-height: 46px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 15px;
+            vertical-align: top;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '🚚';
+            font-size: 20px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .company-name {
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 5px;
+        }
+
+        .company-name h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #fff, #ffeb3b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .company-name p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .invoice-title {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 28px;
+            font-weight: 300;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .invoice-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #ff6b35;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 5px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff5f0, #ffeee6);
+            border: 1px solid #ffcab0;
+            border-radius: 8px;
+        }
+
+        .info-grid {
+            width: 100%;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .info-label {
+            display: inline-block;
+            width: 35%;
+            color: #666;
+            font-weight: 500;
+            vertical-align: top;
+        }
+
+        .info-value {
+            display: inline-block;
+            width: 60%;
+            color: #333;
+            font-weight: 600;
+            vertical-align: top;
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .customer-section {
+            margin-top: 25px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .invoice-table th {
+            background: linear-gradient(135deg, #ff6b35, #f94a29);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .invoice-table tbody tr {
+            background: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .invoice-table tbody tr:hover {
+            background: #fff5f0;
+        }
+
+        .food-truck-name {
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .order-details {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #4caf50;
+            text-align: right;
+        }
+
+        .invoice-table tfoot {
+            background: linear-gradient(135deg, #fff5f0, #ffeee6);
+        }
+
+        .invoice-table tfoot td {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            border-top: 2px solid #ff6b35;
+            border-bottom: none;
+        }
+
+        .total-label {
+            text-align: right;
+            padding-right: 15px;
+            color: #ff6b35;
+        }
+
+        .total-amount {
+            color: #ff6b35;
+            font-size: 18px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .invoice-footer {
+            margin-top: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff5f0, #ffeee6);
+            border: 1px solid #ffcab0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer-text + .footer-text {
+            margin-top: 5px;
+        }
+
+        .truck-icon {
+            display: inline-block;
+            color: #ff6b35;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <!-- Header -->
+    <div class="invoice-header">
+        <div class="logo-company">
+            <div class="logo"></div>
+            <div class="company-name">
+                <h1>trucksy</h1>
+                <p>Food Truck Order Management</p>
+            </div>
+        </div>
+        <div class="invoice-title">ORDER INVOICE</div>
+    </div>
+
+    <!-- Body -->
+    <div class="invoice-body">
+        <!-- Order Details -->
+        <div class="info-section">
+            <h3 class="section-title">Order Details</h3>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Order ID:</span>
+                    <span class="info-value" th:text="${orderId}">ORD-2025-001</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Creation Date:</span>
+                    <span class="info-value" th:text="${creationDate}">2025-09-05</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value"><span class="status-badge">COMPLETED</span></span>
+                </div>
+            </div>
+
+            <div class="customer-section">
+                <h3 class="section-title">Customer Information</h3>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Client Name:</span>
+                        <span class="info-value" th:text="${clientName}">Ahmed Al-Salem</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Food Truck:</span>
+                        <span class="info-value">
+                            <span class="truck-icon">🚚</span>
+                            <span th:text="${foodTruckName}" class="food-truck-name">Burger Express</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Table -->
+        <table class="invoice-table">
+            <thead>
+            <tr>
+                <th>FOOD TRUCK</th>
+                <th>ORDER DETAILS</th>
+                <th>DATE</th>
+                <th style="text-align: right;">TOTAL PRICE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="food-truck-name" th:text="${foodTruckName}">🚚 Burger Express</td>
+                <td class="order-details">Food Order</td>
+                <td th:text="${creationDate}">2025-09-05</td>
+                <td class="price" th:text="${totalPriceFormatted}">75.00 SAR</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="total-label">Total Amount</td>
+                <td class="total-amount" th:text="${totalPriceFormatted}">75.00 SAR</td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <!-- Footer -->
+        <div class="invoice-footer">
+            <p class="footer-text">🚚 This invoice was generated automatically by Trucksy platform</p>
+            <p class="footer-text">Thank you for choosing our food truck services!</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

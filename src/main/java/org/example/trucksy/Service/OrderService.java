@@ -6,6 +6,7 @@ import org.example.trucksy.Api.ApiException;
 import org.example.trucksy.DTO.*;
 import org.example.trucksy.Model.*;
 import org.example.trucksy.Repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,11 @@ public class OrderService {
     private final FoodTruckRepository foodTruckRepository;
     private final AuthRepository authRepository;
     private final OrderRepository orderRepository;
+
+    @Value("${moyasar.api.key}")
+    private String apiKey;
+
+    private static final String MOYASAR_API_URL = "https://api.moyasar.com/v1/payments/";
 
     @Transactional
 //todo make it select by path variable instead of Dto then add it to the dto by code.
@@ -122,6 +128,10 @@ public class OrderService {
 
 
 
+
+
+
+    //================ GET Methods ====================
     @Transactional(readOnly = true)
     public List<OrderDtoOut> getOrdersForFoodTruckDto(Integer foodTruckId) {
         if (foodTruckRepository.findFoodTruckById(foodTruckId) == null)
