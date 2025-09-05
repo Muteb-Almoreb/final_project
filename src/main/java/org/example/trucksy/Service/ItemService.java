@@ -2,8 +2,6 @@ package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
-import org.example.trucksy.DTO.ItemDTO;
-import org.example.trucksy.DTO.ItemViewDTO;
 import org.example.trucksy.Model.Discount;
 import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Model.Item;
@@ -14,7 +12,6 @@ import org.example.trucksy.Repository.OwnerRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,104 +40,62 @@ public class ItemService {
     }
 
 
-    private boolean isDiscountActive(Discount d, LocalDate today) {
-        if (d == null || Boolean.FALSE.equals(d.getIsActive())) return false;
-        if (d.getStartDate() != null && today.isBefore(d.getStartDate())) return false;
-        if (d.getEndDate() != null && today.isAfter(d.getEndDate())) return false;
-        return true;
-    }
 
-    private double round2(double v) {
-        return Math.round(v * 100.0) / 100.0;
-    }
 
-    private ItemViewDTO toView(Item item) {
-        ItemViewDTO dto = new ItemViewDTO();
-        dto.setId(item.getId());
-        dto.setName(item.getName());
-        dto.setDescription(item.getDescription());
-        dto.setPrice(item.getPrice());
-        dto.setIsAvailable(item.getIsAvailable());
-        dto.setIsDiscounted(item.getIsDiscounted());
-
-        Discount d = item.getDiscount();
-        if (d != null && isDiscountActive(d, LocalDate.now()) && d.getPercentage() != null && d.getPercentage() > 0) {
-            dto.setDiscountPercentage(d.getPercentage());
-            dto.setEffectivePrice(round2(item.getPrice() * (1 - d.getPercentage() / 100.0)));
-        } else {
-            dto.setEffectivePrice(item.getPrice());
-        }
-        return dto;
+    public List<Item> getItemsByFoodTruck(Integer ownerId, Integer truckId) {
+        mustOwnTruck(ownerId, truckId);
+        return itemRepository.findAllByFoodTruck_Id(truckId);
     }
 
 
-    public List<ItemViewDTO> getItemsByFoodTruck(Integer ownerId, Integer truckId) {
+
+
+    public void addItemToFoodTruck(Integer ownerId, Integer truckId, Item newItem) {
+        FoodTruck truck = mustOwnTruck(ownerId, truckId);
+
+        Item item = new Item();
+        item.setName(newItem.getName());
+        item.setPrice(newItem.getPrice());
+        item.setDescription(newItem.getDescription());
+        item.setIsAvailable(newItem.getIsAvailable() != null ? newItem.getIsAvailable() : true);
+        item.setIsDiscounted(false);
+        item.setCreationDate(LocalDate.now());
+        item.setFoodTruck(truck);
+
+        itemRepository.save(item);
+    }
+
+
+
+    public void updateItemInFoodTruck(Integer ownerId, Integer truckId, Integer itemId, Item item) {
         mustOwnTruck(ownerId, truckId);
 
-        List<Item> items = itemRepository.findAllByFoodTruck_Id(truckId);
-        List<ItemViewDTO> result = new ArrayList<>();
+        Item oldItem = itemRepository.findItemsById(itemId);
+        if (oldItem == null || oldItem.getFoodTruck() == null || !oldItem.getFoodTruck().getId().equals(truckId))
+            throw new ApiException("Item not found in this FoodTruck");
 
-        for (Item item : items) {
-            result.add(toView(item)); // toView هي نفس الهيلبر اللي يحسب effectivePrice
-        }
+        oldItem.setName(item.getName());
+        oldItem.setDescription(item.getDescription());
+        oldItem.setPrice(item.getPrice());
+        oldItem.setIsAvailable(item.getIsAvailable());
 
-        return result;
+        oldItem.setUpdateDate(LocalDate.now());
+        itemRepository.save(oldItem);
     }
 
 
 
 
-    public void addItemToFoodTruck(Integer ownerId, Integer truckId, ItemDTO dto) {
-            FoodTruck truck = mustOwnTruck(ownerId, truckId);
 
-            Item item = new Item();
-            item.setName(dto.getName());
-            item.setPrice(dto.getPrice());
-            item.setDescription(dto.getDescription());
-            item.setIsAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : true);
-            item.setIsDiscounted(false);
-            item.setCreationDate(LocalDate.now());
-            item.setFoodTruck(truck);
-
-            itemRepository.save(item);
-        }
-
-
-
-    public void updateItemInFoodTruck(Integer ownerId, Integer truckId, Integer itemId, ItemDTO dto) {
+    public void deleteItemFromFoodTruck(Integer ownerId, Integer truckId, Integer itemId) {
         mustOwnTruck(ownerId, truckId);
 
         Item item = itemRepository.findItemsById(itemId);
         if (item == null || item.getFoodTruck() == null || !item.getFoodTruck().getId().equals(truckId))
             throw new ApiException("Item not found in this FoodTruck");
 
-         item.setName(dto.getName());
-         item.setDescription(dto.getDescription());
-         item.setPrice(dto.getPrice());
-         item.setIsAvailable(dto.getIsAvailable());
-
-        item.setUpdateDate(LocalDate.now());
-        itemRepository.save(item);
+        itemRepository.delete(item);
     }
-
-
-
-
-
-
-        public void deleteItemFromFoodTruck(Integer ownerId, Integer truckId, Integer itemId) {
-            mustOwnTruck(ownerId, truckId);
-
-            Item item = itemRepository.findItemsById(itemId);
-            if (item == null || item.getFoodTruck() == null || !item.getFoodTruck().getId().equals(truckId))
-                throw new ApiException("Item not found in this FoodTruck");
-
-            // لو تبغى تمنع الحذف إذا عليه طلبات، تقدر تضيف شرط هنا
-            // if (db.getOrders()!=null && !db.getOrders().isEmpty())
-            //     throw new ApiException("Cannot delete item linked to orders");
-
-            itemRepository.delete(item);
-        }
 
 
 
@@ -156,10 +111,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-
-
     public void setAvailable(Integer ownerId, Integer truckId, Integer itemId) {
-
         mustOwnTruck(ownerId, truckId);
 
         Item item = itemRepository.findItemsById(itemId);
@@ -171,7 +123,6 @@ public class ItemService {
     }
 
     public void setNotAvailable(Integer ownerId, Integer truckId, Integer itemId) {
-
         mustOwnTruck(ownerId, truckId);
 
         Item item = itemRepository.findItemsById(itemId);

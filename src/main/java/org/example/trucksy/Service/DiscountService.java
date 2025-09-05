@@ -2,7 +2,6 @@ package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
-import org.example.trucksy.DTO.DiscountDTO;
 import org.example.trucksy.Model.Discount;
 import org.example.trucksy.Model.Item;
 import org.example.trucksy.Repository.DiscountRepository;
@@ -19,113 +18,152 @@ public class DiscountService {
     private final DiscountRepository discountRepository;
     private final ItemRepository itemRepository;
 
+
+
+
+
+
+
     public List<Discount> getAllDiscounts() {
         return discountRepository.findAll();
     }
 
-    public Discount getDiscountById(Integer id) {
-        Discount discount = discountRepository.findDiscountById(id);
-        if (discount == null)
-            throw new ApiException("Discount not found");
-        return discount;
+    public Discount getDiscountByItemId(Integer itemId) {
+        Item item = itemRepository.findItemById(itemId);
+        if (item == null) throw new ApiException("Item not found");
+        return item.getDiscount();
+    }
+
+    //تقريب عشري
+    private double round2(double v) {
+        return Math.round(v * 100.0) / 100.0;
     }
 
 
-    public void addDiscount(Integer itemId, DiscountDTO dto) {
-        if (dto == null) throw new ApiException("Discount body is required");
+
+
+    public void addDiscount(Integer itemId, Discount discount) {
+        if (discount == null) throw new ApiException("Discount body is required");
 
         Item item = itemRepository.findItemsById(itemId);
-        if (item == null)
-            throw new ApiException("Item id not found");
+        if (item == null) throw new ApiException("Item id not found");
+        if (item.getDiscount() != null) throw new ApiException("Item already has a discount");
+
+        Discount d = new Discount();
+        d.setTitle(discount.getTitle());
+        d.setDescription(discount.getDescription());
+        d.setPercentage(discount.getPercentage());
+        d.setStartDate(discount.getStartDate());
+        d.setEndDate(discount.getEndDate());
+        d.setIsActive(discount.getIsActive() != null ? discount.getIsActive() : true);
+        d.setCreateDate(LocalDate.now());
+
+        d.setItem(item);
+        d.setOriginalPrice(item.getPrice());
 
 
-
-        if (item.getDiscount() != null) {
-            throw new ApiException("Item already has a discount");
+        if (Boolean.TRUE.equals(d.getIsActive()) && d.getPercentage() != null) {
+            double newPrice = d.getOriginalPrice() * (1 - d.getPercentage() / 100.0);
+            item.setPrice(round2(newPrice));
+            item.setIsDiscounted(true);
+            item.setUpdateDate(LocalDate.now());
+            itemRepository.save(item);
         }
 
-
-
-
-        Discount discount = new Discount();
-        discount.setTitle(dto.getTitle());
-        discount.setDescription(dto.getDescription());
-        discount.setPercentage(dto.getPercentage());
-        discount.setStartDate(dto.getStartDate());
-        discount.setEndDate(dto.getEndDate());
-        discount.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
-        discount.setCreateDate(LocalDate.now());
-
-        //        // ربط @MapsId
-
-        //        discount.setId(item.getId());
-
-
-        discount.setItem(item);
-        //discount.setId(item.getId()); // مهم لأننا نستخدم @MapsId
-
-
-
-        discountRepository.save(discount);
-
-        // تحديث للأيتم
-        item.setIsDiscounted(true);
+        discountRepository.save(d);
+        item.setDiscount(d);
         itemRepository.save(item);
     }
 
-    public void updateDiscount(Integer id, DiscountDTO dto) {
+
+    public void updateDiscount(Integer id, Discount discount) {
         if (id == null) throw new ApiException("Discount id is required");
-        Discount oldDiscount = discountRepository.findDiscountById(id);
 
-        if (oldDiscount == null)
-            throw new ApiException("Discount not found");
+        Discount d = discountRepository.findDiscountById(id);
+        if (d == null) throw new ApiException("Discount not found");
+
+        Item item = d.getItem();
+        if (item == null) throw new ApiException("Linked item not found");
+
+        d.setTitle(discount.getTitle());
+        d.setDescription(discount.getDescription());
+        d.setStartDate(discount.getStartDate());
+        d.setEndDate(discount.getEndDate());
+        d.setIsActive(discount.getIsActive());
+        d.setPercentage(discount.getPercentage());
+
+        if (Boolean.TRUE.equals(d.getIsActive()) && d.getPercentage() != null) {
+            Double base = d.getOriginalPrice() != null ? d.getOriginalPrice() : item.getPrice();
+            double newPrice = base * (1 - d.getPercentage() / 100.0);
+            item.setPrice(round2(newPrice));
+            item.setIsDiscounted(true);
+            item.setUpdateDate(LocalDate.now());
+            itemRepository.save(item);
+        }
+
+        discountRepository.save(d);
+    }
 
 
+    public void activateDiscount(Integer id) {
+        Discount d = discountRepository.findDiscountById(id);
+        if (d == null) throw new ApiException("Discount not found");
 
-        oldDiscount.setPercentage(dto.getPercentage());
-        oldDiscount.setStartDate(dto.getStartDate());
-        oldDiscount.setEndDate(dto.getEndDate());
-        oldDiscount.setIsActive(dto.getIsActive());
+        Item item = d.getItem();
+        if (item == null) throw new ApiException("Linked item not found");
 
-        discountRepository.save(oldDiscount);
+        if (d.getOriginalPrice() == null) d.setOriginalPrice(item.getPrice());
+        if (d.getPercentage() != null) {
+            double newPrice = d.getOriginalPrice() * (1 - d.getPercentage() / 100.0);
+            item.setPrice(round2(newPrice));
+        }
+        item.setIsDiscounted(true);
+        item.setUpdateDate(LocalDate.now());
+        itemRepository.save(item);
+
+        d.setIsActive(true);
+        discountRepository.save(d);
+    }
+
+
+    public void deactivateDiscount(Integer id) {
+        Discount d = discountRepository.findDiscountById(id);
+        if (d == null) throw new ApiException("Discount not found");
+
+        Item item = d.getItem();
+        if (item == null) throw new ApiException("Linked item not found");
+
+        if (d.getOriginalPrice() != null) {
+            item.setPrice(round2(d.getOriginalPrice()));
+        }
+        item.setIsDiscounted(false);
+        item.setUpdateDate(LocalDate.now());
+        itemRepository.save(item);
+
+        d.setIsActive(false);
+        discountRepository.save(d);
     }
 
 
     public void deleteDiscount(Integer id) {
-        Discount discount = discountRepository.findDiscountById(id);
-        if (discount == null) throw new ApiException("Discount not found");
+        Discount d = discountRepository.findDiscountById(id);
+        if (d == null) throw new ApiException("Discount not found");
 
-        Item item = discount.getItem();
+        Item item = d.getItem();
         if (item != null) {
+            if (d.getOriginalPrice() != null) {
+                item.setPrice(round2(d.getOriginalPrice()));
+            }
             item.setIsDiscounted(false);
+            item.setDiscount(null);
+            item.setUpdateDate(LocalDate.now());
             itemRepository.save(item);
         }
 
-        discountRepository.delete(discount);
+        d.setItem(null);
+        discountRepository.delete(d);
     }
 
-    public void activateDiscount(Integer id) {
-        Discount discount = discountRepository.findDiscountById(id);
-        if (discount == null) throw new ApiException("Discount not found");
-
-        discount.setIsActive(true);
-        discountRepository.save(discount);
-    }
-
-    public void deactivateDiscount(Integer id) {
-        Discount discount = discountRepository.findDiscountById(id);
-        if (discount == null) throw new ApiException("Discount not found");
-
-        discount.setIsActive(false);
-        discountRepository.save(discount);
-
-        // افصل حالة الخصم من الآيتم
-        Item item = discount.getItem();
-        if (item != null) {
-            item.setIsDiscounted(false);
-            itemRepository.save(item);
-        }
-    }
 
 
 }

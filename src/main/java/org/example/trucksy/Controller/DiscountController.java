@@ -2,7 +2,6 @@ package org.example.trucksy.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
-import org.example.trucksy.DTO.DiscountDTO;
 import org.example.trucksy.Model.Discount;
 import org.example.trucksy.Service.DiscountService;
 import org.springframework.http.ResponseEntity;
@@ -23,39 +22,39 @@ public class DiscountController {
         return discountService.getAllDiscounts();
     }
 
-    @GetMapping("/getBy/{id}")
-    public ResponseEntity<?> getDiscountById(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(discountService.getDiscountById(id));
+    @GetMapping("/getBy/{ItemId}")
+    public ResponseEntity<?> getDiscountById(@PathVariable Integer ItemId) {
+        return ResponseEntity.status(200).body(discountService.getDiscountByItemId(ItemId));
     }
 
     @PostMapping("/add/{itemId}")
-    public ResponseEntity<?> addDiscount(@PathVariable Integer itemId, @RequestBody DiscountDTO dto) {
-        discountService.addDiscount(itemId, dto);
+    public ResponseEntity<?> addDiscount(@PathVariable Integer itemId, @RequestBody Discount discount) {
+        discountService.addDiscount(itemId, discount);
         return ResponseEntity.status(200).body (new ApiResponse("Discount added successfully"));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateDiscount(@PathVariable Integer id, @RequestBody DiscountDTO dto) {
-        discountService.updateDiscount(id, dto);
+    @PutMapping("/update/{discountId}")
+    public ResponseEntity<?> updateDiscount(@PathVariable Integer discountId, @RequestBody Discount discount) {
+        discountService.updateDiscount(discountId, discount);
         return ResponseEntity.status(200).body (new ApiResponse("Discount updated successfully"));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteDiscount(@PathVariable Integer id) {
-        discountService.deleteDiscount(id);
+    @DeleteMapping("/delete/{discountId}")
+    public ResponseEntity<?> deleteDiscount(@PathVariable Integer discountId) {
+        discountService.deleteDiscount(discountId);
         return ResponseEntity.status(200).body (new ApiResponse("Discount deleted successfully"));
     }
 
 
-    @PutMapping("/activate/{id}")
-    public ResponseEntity<?> activateDiscount(@PathVariable Integer id) {
-        discountService.activateDiscount(id);
+    @PutMapping("/activate/{discountId}")
+    public ResponseEntity<?> activateDiscount(@PathVariable Integer discountId) {
+        discountService.activateDiscount(discountId);
         return ResponseEntity.status(200).body (new ApiResponse("Discount activated"));
     }
 
-    @PutMapping("/deactivate/{id}")
-    public ResponseEntity<?> deactivateDiscount(@PathVariable Integer id) {
-        discountService.deactivateDiscount(id);
+    @PutMapping("/deactivate/{discountId}")
+    public ResponseEntity<?> deactivateDiscount(@PathVariable Integer discountId) {
+        discountService.deactivateDiscount(discountId);
         return ResponseEntity.status(200).body ( new ApiResponse("Discount deactivated"));
     }
 }
