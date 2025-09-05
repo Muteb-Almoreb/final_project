@@ -43,7 +43,7 @@ public class FoodTruck {
 
     //todo check the relation
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "foodTruck")
-    @JsonIgnore
+
     private Set<Review> reviews;
 
 
