@@ -28,6 +28,10 @@ public class Discount {
     private Boolean isActive;
     private LocalDate createDate;
 
+
+    @Column(name = "original_price")
+    private Double originalPrice;
+
     @OneToOne
     @MapsId
     @JsonIgnore

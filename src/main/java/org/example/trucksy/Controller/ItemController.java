@@ -2,13 +2,10 @@ package org.example.trucksy.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
-import org.example.trucksy.DTO.ItemDTO;
 import org.example.trucksy.Model.Item;
 import org.example.trucksy.Service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/item")
@@ -28,8 +25,8 @@ public class ItemController {
     @PostMapping("/add/{ownerId}/{truckId}")
     public ResponseEntity<ApiResponse> addItem(@PathVariable Integer ownerId,
                                                @PathVariable Integer truckId,
-                                               @RequestBody ItemDTO dto) {
-        itemService.addItemToFoodTruck(ownerId, truckId, dto);
+                                               @RequestBody Item item) {
+        itemService.addItemToFoodTruck(ownerId, truckId, item);
         return ResponseEntity.ok(new ApiResponse("Item added to food truck"));
     }
 
@@ -37,8 +34,8 @@ public class ItemController {
     public ResponseEntity<ApiResponse> updateItem(@PathVariable Integer ownerId,
                                                   @PathVariable Integer truckId,
                                                   @PathVariable Integer itemId,
-                                                  @RequestBody ItemDTO dto) {
-        itemService.updateItemInFoodTruck(ownerId, truckId, itemId, dto);
+                                                  @RequestBody Item item) {
+        itemService.updateItemInFoodTruck(ownerId, truckId, itemId, item);
         return ResponseEntity.ok(new ApiResponse("Item updated"));
     }
 
