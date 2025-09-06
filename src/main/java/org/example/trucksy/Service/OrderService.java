@@ -34,27 +34,26 @@ public class OrderService {
 
     @Value("${moyasar.api.key}")
     private String apiKey;
-
     private static final String MOYASAR_API_URL = "https://api.moyasar.com/v1/payments/";
 
     @Transactional
     public ResponseEntity<?> addOrder(Integer clientId, Integer foodTruckId, Set<LiensDtoIn> liensDtoIns) {
         FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruckId);
-        if(foodTruck == null )
+        if (foodTruck == null)
             throw new ApiException("FoodTruck not found");
 
-        if("CLOSED".equals(foodTruck.getStatus()))
+        if ("CLOSED".equals(foodTruck.getStatus()))
             throw new ApiException("food truck is already closed");
 
         Client client = clientRepository.findClientById(clientId);
-        if(client == null)
+        if (client == null)
             throw new ApiException("Client not found");
 
         User user = authRepository.findUserById(clientId);
         if (user == null)
             throw new ApiException("User not found for this client");
 
-        if(user.getBankCard() == null)
+        if (user.getBankCard() == null)
             throw new ApiException("Client does not have Bank Card");
 
         if (liensDtoIns == null || liensDtoIns.isEmpty())
@@ -65,16 +64,16 @@ public class OrderService {
         Double totalPrice = 0.0;
 
         // FIXED: Better duplicate item handling
-        for(LiensDtoIn lien : liensDtoIns){
+        for (LiensDtoIn lien : liensDtoIns) {
             Integer qty = lien.getQuantity();
             if (qty == null || qty <= 0)
                 throw new ApiException("Quantity must be > 0");
 
             Item item = itemRepository.findItemById(lien.getItemId());
-            if(item == null){
+            if (item == null) {
                 throw new ApiException("Item with ID " + lien.getItemId() + " not found");
             }
-            if(Boolean.FALSE.equals(item.getIsAvailable())){
+            if (Boolean.FALSE.equals(item.getIsAvailable())) {
                 throw new ApiException("Item " + item.getName() + " is not available right now");
             }
 
@@ -105,7 +104,7 @@ public class OrderService {
             }
         }
 
-        if(user.getBankCard().getAmount() < totalPrice){
+        if (user.getBankCard().getAmount() < totalPrice) {
             throw new ApiException("Insufficient funds. Required: " + totalPrice + " SAR");
         }
 
@@ -297,20 +296,20 @@ public class OrderService {
                     String invoicePublicLink = "http://localhost:8080/api/v1/order/" + order.getId() + "/invoice.pdf";
 
                     String html = String.format("""
-                        <div style="font-family:Arial,Helvetica,sans-serif">
-                          <h2 style="margin:0 0 8px 0">Thanks for your order!</h2>
-                          <p style="margin:0 0 12px 0">Your Trucksy order <b>#%s</b> has been paid successfully.</p>
-                          <p style="margin:0 0 12px 0">Total amount: <b>%.2f SAR</b></p>
-                          <p style="margin:0 0 12px 0">We've attached your invoice as a PDF.</p>
-                          <p style="margin:0 0 12px 0">
-                            You can also download it from this link:
-                            <a href="%s" target="_blank" rel="noopener noreferrer">Download Invoice (PDF)</a>
-                          </p>
-                          <p style="color:#6b7280;font-size:12px;margin:16px 0 0 0">
-                            If you didn't authorize this payment, please contact support.
-                          </p>
-                        </div>
-                        """, order.getId(), order.getTotalPrice(), invoicePublicLink);
+                            <div style="font-family:Arial,Helvetica,sans-serif">
+                              <h2 style="margin:0 0 8px 0">Thanks for your order!</h2>
+                              <p style="margin:0 0 12px 0">Your Trucksy order <b>#%s</b> has been paid successfully.</p>
+                              <p style="margin:0 0 12px 0">Total amount: <b>%.2f SAR</b></p>
+                              <p style="margin:0 0 12px 0">We've attached your invoice as a PDF.</p>
+                              <p style="margin:0 0 12px 0">
+                                You can also download it from this link:
+                                <a href="%s" target="_blank" rel="noopener noreferrer">Download Invoice (PDF)</a>
+                              </p>
+                              <p style="color:#6b7280;font-size:12px;margin:16px 0 0 0">
+                                If you didn't authorize this payment, please contact support.
+                              </p>
+                            </div>
+                            """, order.getId(), order.getTotalPrice(), invoicePublicLink);
 
                     pdfMailService.sendHtmlEmailWithAttachment(
                             customerEmail,
@@ -426,17 +425,37 @@ public class OrderService {
         private String unitPrice;
         private String lineTotal;
 
-        public String getItemName() { return itemName; }
-        public void setItemName(String itemName) { this.itemName = itemName; }
+        public String getItemName() {
+            return itemName;
+        }
 
-        public Integer getQuantity() { return quantity; }
-        public void setQuantity(Integer quantity) { this.quantity = quantity; }
+        public void setItemName(String itemName) {
+            this.itemName = itemName;
+        }
 
-        public String getUnitPrice() { return unitPrice; }
-        public void setUnitPrice(String unitPrice) { this.unitPrice = unitPrice; }
+        public Integer getQuantity() {
+            return quantity;
+        }
 
-        public String getLineTotal() { return lineTotal; }
-        public void setLineTotal(String lineTotal) { this.lineTotal = lineTotal; }
+        public void setQuantity(Integer quantity) {
+            this.quantity = quantity;
+        }
+
+        public String getUnitPrice() {
+            return unitPrice;
+        }
+
+        public void setUnitPrice(String unitPrice) {
+            this.unitPrice = unitPrice;
+        }
+
+        public String getLineTotal() {
+            return lineTotal;
+        }
+
+        public void setLineTotal(String lineTotal) {
+            this.lineTotal = lineTotal;
+        }
     }
 
     @Transactional(readOnly = true)

@@ -45,9 +45,23 @@ public class PdfService {
         }
     }
 
-    // NEW: Method specifically for generating invoice PDFs - matches OrderService call
+    // Method specifically for generating invoice PDFs - matches OrderService call
     public byte[] generateInvoicePdf(Map<String, Object> templateVars) {
         return generatePdf("OrderInvoice", templateVars);
+    }
+
+    // NEW: Method specifically for generating subscription invoice PDFs
+    public byte[] generateSubscriptionInvoicePdf(Map<String, Object> templateVars) {
+        try {
+            return generatePdf("SubscriptionInvoice", templateVars);
+        } catch (RuntimeException e) {
+            // Fallback: if SubscriptionInvoice template doesn't exist, use OrderInvoice as fallback
+            if (e.getMessage().contains("template might not exist")) {
+                System.err.println("SubscriptionInvoice template not found, using OrderInvoice as fallback");
+                return generatePdf("OrderInvoice", templateVars);
+            }
+            throw e;
+        }
     }
 
     // Build receipt for AI purchase (one-time) - keeping your existing method

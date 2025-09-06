@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Trucksy - Subscription Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #ff6b35;
+        }
+
+        .invoice-header {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+
+        .logo-company {
+            width: 60%;
+        }
+
+        .logo {
+            width: 60px;
+            height: 50px;
+            background: #ff8c42;
+            border: 2px solid white;
+            display: inline-block;
+            text-align: center;
+            line-height: 46px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 15px;
+            vertical-align: top;
+        }
+
+        .company-name {
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 5px;
+        }
+
+        .company-name h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .company-name p {
+            margin: 3px 0 0 0;
+            font-size: 13px;
+            color: #fff;
+        }
+
+        .invoice-title {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.95);
+            color: #ff6b35;
+            padding: 12px 18px;
+            border: 1px solid white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .premium-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            background: #ffd700;
+            color: #333;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .invoice-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #ff6b35;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 5px;
+        }
+
+        .subscription-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff8f5, #f0f8ff);
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.1);
+        }
+
+        .info-grid {
+            width: 100%;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        .info-label {
+            display: inline-block;
+            width: 35%;
+            color: #666;
+            font-weight: bold;
+            vertical-align: top;
+        }
+
+        .info-value {
+            display: inline-block;
+            width: 60%;
+            color: #333;
+            font-weight: bold;
+            vertical-align: top;
+        }
+
+        .status-badge {
+            background: #4caf50;
+            color: white;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+        }
+
+        .plan-badge {
+            background: #2196f3;
+            color: white;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+        }
+
+        .owner-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .payment-info {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .payment-info-title {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .payment-id {
+            font-family: Courier, monospace;
+            background: #f5f5f5;
+            padding: 4px 8px;
+            font-size: 12px;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .benefits-section {
+            margin: 30px 0;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .benefits-title {
+            color: #ff6b35;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .benefits-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+            color: #333;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .benefits-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .benefits-list li:last-child {
+            border-bottom: none;
+        }
+
+        .subscription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .subscription-table th {
+            background: #ff6b35;
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .subscription-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            background: white;
+        }
+
+        .subscription-table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .plan-name {
+            font-weight: bold;
+            color: #ff6b35;
+            font-size: 16px;
+        }
+
+        .plan-details {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #4caf50;
+            text-align: right;
+            font-size: 16px;
+        }
+
+        .subscription-table tfoot {
+            background: #fff8f5;
+        }
+
+        .subscription-table tfoot td {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            border-top: 3px solid #ff6b35;
+            border-bottom: none;
+            padding: 20px 15px;
+        }
+
+        .total-label {
+            text-align: right;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .total-amount {
+            color: #ff6b35;
+            font-size: 22px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .billing-info {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .billing-title {
+            color: #1976d2;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .next-billing {
+            color: #1976d2;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .invoice-footer {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff8f5, #f0f8ff);
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .footer-highlight {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        .welcome-message {
+            background: #ffd700;
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Simple responsive rules - basic only */
+        @media print {
+            body { margin: 0; padding: 10px; }
+            .invoice-container { border: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <!-- Header -->
+    <div class="invoice-header">
+        <div class="logo-company">
+            <div class="logo">Trucksy</div>
+            <div class="company-name">
+                <h1>trucksy</h1>
+                <p>Food Truck Business Platform</p>
+            </div>
+        </div>
+        <div class="invoice-title">Subscription Invoice</div>
+        <div class="premium-badge">PREMIUM</div>
+    </div>
+
+    <!-- Body -->
+    <div class="invoice-body">
+        <!-- Welcome Message -->
+        <div class="welcome-message">
+            ** Welcome to Trucksy Premium! **
+        </div>
+
+        <!-- Subscription Details -->
+        <div class="subscription-section">
+            <h3 class="section-title">Subscription Information</h3>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Subscription ID:</span>
+                    <span class="info-value">#<span th:text="${subscriptionId}">SUB-2025-001</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Activation Date:</span>
+                    <span class="info-value" th:text="${subscriptionDate}">2025-09-06</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">
+                        <span class="status-badge" th:text="${subscriptionStatus}">ACTIVE</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Plan:</span>
+                    <span class="info-value">
+                        <span class="plan-badge" th:text="${subscriptionPlan}">Monthly Premium</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="owner-section">
+                <h3 class="section-title">Business Owner Details</h3>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Owner Name:</span>
+                        <span class="info-value" th:text="${ownerName}">Ahmed Al-Salem</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" th:text="${ownerEmail}">ahmed@example.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="payment-info">
+                <div class="payment-info-title">💳 Subscription Payment Confirmed</div>
+                <div>Transaction ID: <span class="payment-id" th:text="${paymentId}">pay_123456789</span></div>
+            </div>
+        </div>
+
+        <!-- Premium Benefits -->
+        <div class="benefits-section">
+            <h3 class="benefits-title">🌟 Your Premium Benefits</h3>
+            <ul class="benefits-list">
+                <li><strong>Advanced Dashboard Analytics</strong> - Detailed insights into your business performance</li>
+                <li><strong>Priority Customer Support</strong> - Get help faster with dedicated support channels</li>
+                <li><strong>Enhanced Reporting Tools</strong> - Generate comprehensive business reports</li>
+                <li><strong>Premium Food Truck Management</strong> - Access to advanced management features</li>
+                <li><strong>Marketing Tools</strong> - Promote your food truck with built-in marketing features</li>
+                <li><strong>Multi-Location Support</strong> - Manage multiple food trucks from one dashboard</li>
+            </ul>
+        </div>
+
+        <!-- Subscription Summary Table -->
+        <table class="subscription-table">
+            <thead>
+            <tr>
+                <th>SUBSCRIPTION PLAN</th>
+                <th>BILLING PERIOD</th>
+                <th>ACTIVATION DATE</th>
+                <th style="text-align: right;">AMOUNT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="plan-name" th:text="${subscriptionPlan}">Monthly Premium</div>
+                    <div class="plan-details">Full access to all premium features</div>
+                </td>
+                <td>Monthly Subscription</td>
+                <td th:text="${subscriptionDate}">2025-09-06</td>
+                <td class="price" th:text="${subscriptionFee}">30.00 SAR</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="total-label">Total Subscription Fee</td>
+                <td class="total-amount" th:text="${subscriptionFee}">30.00 SAR</td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <!-- Next Billing Info -->
+        <div class="billing-info">
+            <div class="billing-title">📅 Next Billing Information</div>
+            <div class="next-billing">Next billing date: <span th:text="${nextBillingDate}">2025-10-06</span></div>
+            <div style="margin-top: 8px; font-size: 13px; color: #666;">
+                Your subscription will automatically renew for continued access to premium features
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="invoice-footer">
+            <p class="footer-text">🚚 This subscription invoice was generated automatically by <span class="footer-highlight">Trucksy Premium</span></p>
+            <p class="footer-text"><strong>Thank you for upgrading to Premium!</strong></p>
+            <p class="footer-text">Start exploring your new premium features in the Trucksy dashboard</p>
+            <p class="footer-text">For premium support, contact us through the priority support channel in your dashboard</p>
+            <p class="footer-text" style="margin-top: 15px; font-size: 12px; color: #999;">
+                Questions about your subscription? Email us or use the priority support feature in your premium dashboard
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
