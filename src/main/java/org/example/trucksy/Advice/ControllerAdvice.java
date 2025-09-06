@@ -13,7 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import java.sql.SQLIntegrityConstraintViolationException;
-//
+import java.util.Map;
+
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
     @ExceptionHandler(value = ApiException.class)
@@ -36,7 +37,7 @@ public class ControllerAdvice {
     }
 
 
-    // SQL Constraint Ex:(Duplicate) Exception.
+    // SQL Constraint Ex:(Duplicate) Exception
     @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ApiResponse> SQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
         String msg = e.getMessage();
@@ -81,5 +82,14 @@ public class ControllerAdvice {
     @ExceptionHandler(value = HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<ApiResponse> HttpMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException e) {
         return ResponseEntity.status(400).body(new ApiResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String,Object>> badRequest(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(Map.of(
+                "status", 400,
+                "error", "Bad Request",
+                "message", ex.getMessage()
+        ));
     }
 }

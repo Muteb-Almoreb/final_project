@@ -1,10 +1,9 @@
 package org.example.trucksy.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDTO {
@@ -13,4 +12,6 @@ public class ClientDTO {
     private String email;
     private String password;
     private String phone;
+    private String city;
+    private String district;
 }

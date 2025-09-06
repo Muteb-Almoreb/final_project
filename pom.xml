@@ -113,6 +113,12 @@
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
 
         <!-- Spring AI PDF reader (مع استبعاد PDFBox حتى لا يسحب 3.x) -->
         <dependency>
