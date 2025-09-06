@@ -33,6 +33,6 @@ public class FoodTruckDTO {
     private String district;
 
 
-    private Double latitude;
-    private Double longitude;
+    private Double latitude = null;
+    private Double longitude = null;
 }

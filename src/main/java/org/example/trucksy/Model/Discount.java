@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 
@@ -48,8 +49,7 @@ public class Discount {
     @Column(columnDefinition = "boolean not null")
     private Boolean isActive;
 
-    @PastOrPresent(message = "Create date cannot be in the future")
-    @Column(columnDefinition = "date not null")
+    @CreationTimestamp
     private LocalDate createDate;
 
 
