@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.DTOOut.TruckReviewsDTOOut;
+import org.example.trucksy.Model.User;
 import org.example.trucksy.Service.ReviewService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PostMapping("/add/{client_id}/{foodTruck_id}")
-    public ResponseEntity<?> assignReview(@PathVariable Integer client_id, @PathVariable Integer foodTruck_id , @Valid@RequestBody TruckReviewsDTOOut truckReviewsDTOOut) {
-        reviewService.assignReview(client_id,foodTruck_id , truckReviewsDTOOut);
+    @PostMapping("/add/{foodTruck_id}")
+    public ResponseEntity<?> assignReview(@AuthenticationPrincipal User user, @PathVariable Integer foodTruck_id , @Valid@RequestBody TruckReviewsDTOOut truckReviewsDTOOut) {
+        reviewService.assignReview(user.getId(), foodTruck_id , truckReviewsDTOOut);
         return ResponseEntity.status(200).body(new ApiResponse("Review Assigned"));
     }
 
@@ -25,9 +27,9 @@ public class ReviewController {
         return ResponseEntity.status(200).body(reviewService.getReviewsByFoodTruck(foodTruck_id));
     }
 
-    @GetMapping("/get-reviews-by-client/{client_id}")
-    public ResponseEntity<?> getReviewsByClient(@PathVariable Integer client_id) {
-        return ResponseEntity.status(200).body(reviewService.getReviewsByClient(client_id));
+    @GetMapping("/get-reviews-by-client")
+    public ResponseEntity<?> getReviewsByClient(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(reviewService.getReviewsByClient(user.getId()));
     }
 
     @GetMapping("/get-truck-rating/{foodTruck_id}")

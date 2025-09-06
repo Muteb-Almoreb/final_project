@@ -11,6 +11,7 @@ import org.example.trucksy.Model.Client;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Repository.AuthRepository;
 import org.example.trucksy.Repository.ClientRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,7 @@ public class ClientService {
         System.out.println(clientDTO.getEmail());
         User user = new User();
         user.setUsername(clientDTO.getUsername());
-        user.setPassword(clientDTO.getPassword()); // todo make it Encrypt
+        user.setPassword(new BCryptPasswordEncoder().encode(clientDTO.getPassword()));
         user.setEmail(clientDTO.getEmail());
         user.setPhoneNumber(clientDTO.getPhone());
         user.setRole("CLIENT");
@@ -46,7 +47,7 @@ public class ClientService {
         }
         User user = client.getUser();
         user.setUsername(clientDTO.getUsername());
-        user.setPassword(clientDTO.getPassword()); //todo make the password Encrypt
+        user.setPassword(new BCryptPasswordEncoder().encode(clientDTO.getPassword()));
         user.setEmail(clientDTO.getEmail());
         user.setPhoneNumber(clientDTO.getPhone());
         clientRepository.save(client);
