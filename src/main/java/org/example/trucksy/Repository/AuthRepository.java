@@ -15,4 +15,7 @@ public interface AuthRepository extends JpaRepository<User , Integer> {
     @Query("select u from User u where u.role = 'OWNER'")
     List<User> findAllUsersWithRoleOwner();
 
+
+    @Query("select u from User u where u.role = 'CLIENT'")
+    List<User> findAllUsersWithRoleClient();
 }
