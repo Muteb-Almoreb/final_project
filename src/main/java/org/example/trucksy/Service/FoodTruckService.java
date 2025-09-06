@@ -142,4 +142,37 @@ public class FoodTruckService {
         foodTruckRepository.save(foodTruck);
     }
 
+
+    public void openFoodTruck(Integer owner_id , Integer foodTruck_id) {
+        Owner owner = ownerRepository.findOwnerById(owner_id);
+        if(owner == null){
+            throw new ApiException("Owner not found");
+        }
+        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
+        if(foodTruck == null){
+            throw new ApiException("FoodTruck not found");
+        }
+        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
+            throw new ApiException("You don't own this food truck");
+        }
+        foodTruck.setStatus("OPEN");
+        foodTruckRepository.save(foodTruck);
+    }
+
+
+    public void closeFoodTruck(Integer owner_id , Integer foodTruck_id) {
+        Owner owner = ownerRepository.findOwnerById(owner_id);
+        if(owner == null){
+            throw new ApiException("Owner not found");
+        }
+        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
+        if(foodTruck == null){
+            throw new ApiException("FoodTruck not found");
+        }
+        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
+            throw new ApiException("You don't own this food truck");
+        }
+        foodTruck.setStatus("CLOSE");
+        foodTruckRepository.save(foodTruck);
+    }
 }
