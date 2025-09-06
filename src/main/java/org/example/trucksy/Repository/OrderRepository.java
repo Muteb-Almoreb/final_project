@@ -1,6 +1,7 @@
 package org.example.trucksy.Repository;
 
 import org.example.trucksy.Model.Order;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,17 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     Integer countCompletedOrdersByOwner(@Param("ownerId") Integer ownerId);
 
+    @Query("""
+        select o from Order o 
+        where o.foodTruck.owner.id = :ownerId 
+        order by o.orderDate desc
+    """)
+    List<Order> findByOwnerIdOrderByOrderDateDesc(@Param("ownerId") Integer ownerId, Pageable pageable);
+
+    @Query("""
+        select o from Order o 
+        where o.foodTruck.owner.id = :ownerId 
+        order by o.orderDate desc
+    """)
+    List<Order> findByOwnerIdOrderByOrderDateDesc(@Param("ownerId") Integer ownerId);
 }
