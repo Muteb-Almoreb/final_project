@@ -2,15 +2,10 @@ package org.example.trucksy.Controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.DTO.OwnerDTO;
 import org.example.trucksy.Service.OwnerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,13 +16,13 @@ public class OwnerController {
     private final OwnerService ownerService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> registerOwner(@Valid@RequestBody OwnerDTO ownerDTO) {
+    public ResponseEntity<?> registerOwner(@Valid @RequestBody OwnerDTO ownerDTO) {
         ownerService.registerOwner(ownerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Owner registered successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOwner(@PathVariable Integer id, @Valid@RequestBody OwnerDTO ownerDTO) {
+    public ResponseEntity<?> updateOwner(@PathVariable Integer id, @Valid @RequestBody OwnerDTO ownerDTO) {
         ownerService.updateOwner(id, ownerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Owner updated successfully"));
     }
@@ -36,5 +31,30 @@ public class OwnerController {
     public ResponseEntity<?> deleteOwner(@PathVariable Integer id) {
         ownerService.deleteOwner(id);
         return ResponseEntity.status(200).body(new ApiResponse("Owner deleted successfully"));
+    }
+
+    // Subscription payment endpoint - following the same style as addOrder
+    @PostMapping("/subscribe/{ownerId}") // todo after Security added remove ownerId from the path
+    public ResponseEntity<?> subscribeOwner(@PathVariable Integer ownerId) {
+        // NOTE: Return service ResponseEntity directly to avoid double-wrapping.
+        return ownerService.ownerSubscribePayment(ownerId);
+    }
+
+    //todo test the call manually and after deployment it will call directly from subscribe endpoint with the Callback Url
+    //1) paymentId: POST /api/v1/owner/callback/{ownerId} use this method after deploy -> so this is for production env
+    @PostMapping("/callback/{ownerId}")
+    public ResponseEntity<?> subscriptionCallbackNoPid(@PathVariable Integer ownerId) {
+        // NOTE: Controller path is /api/v1/owner/callback/{ownerId}
+        return ownerService.handleSubscriptionPaymentCallback(ownerId, null);
+    }
+
+    // 2) paymentId: POST /api/v1/owner/callback/{ownerId}/{paymentId} -> and this for developer env
+    @PostMapping("/callback/{ownerId}/{paymentId}")
+    public ResponseEntity<?> subscriptionCallbackWithPid(
+            @PathVariable Integer ownerId,
+            @PathVariable String paymentId
+    ) {
+        // NOTE: Controller path is /api/v1/owner/callback/{ownerId}/{paymentId}
+        return ownerService.handleSubscriptionPaymentCallback(ownerId, paymentId);
     }
 }

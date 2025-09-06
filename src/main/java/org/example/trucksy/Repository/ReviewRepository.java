@@ -17,4 +17,14 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("select avg(r.rating) from Review r where r.foodTruck.id = :foodTruckId")
     Double findAverageRatingByFoodTruckId(@Param("foodTruckId") Integer foodTruckId);
+
+
+    @Query("SELECT r FROM Review r WHERE r.foodTruck.id = :foodTruckId AND r.comment IS NOT NULL AND r.comment != ''")
+    List<Review> findByFoodTruckIdWithComments(@Param("foodTruckId") Integer foodTruckId);
+
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.foodTruck.id = :foodTruckId")
+    Integer countReviewsByFoodTruckId(@Param("foodTruckId") Integer foodTruckId);
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.foodTruck.id = :foodTruckId")
+    Double getAverageRatingByFoodTruckId(@Param("foodTruckId") Integer foodTruckId);
 }

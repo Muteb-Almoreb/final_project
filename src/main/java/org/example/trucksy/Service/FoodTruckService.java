@@ -100,7 +100,9 @@ public class FoodTruckService {
                         r.getDescription(),
                         r.getCategory(),
                         r.getCity(),
-                        r.getDistrict()
+                        r.getDistrict(),
+                        r.getLatitude(),//ماتحتاجها بس حطيتها عشان اشيل الerror
+                        r.getLongitude()//ماتحتاجها بس حطيتها عشان اشيل الerror
                 )).toList();
     }
 
