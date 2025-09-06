@@ -30,6 +30,10 @@ public class FoodTruck {
 
     private Double longitude;
 
+    private String city;
+
+    private String district;
+
     private String status;
 
     @ManyToOne

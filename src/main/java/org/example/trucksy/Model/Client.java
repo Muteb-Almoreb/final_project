@@ -15,6 +15,8 @@ public class Client {
 
     @Id
     private Integer id;
+    private String city;
+    private String district;
     private Double latitude;
     private Double longitude;
 

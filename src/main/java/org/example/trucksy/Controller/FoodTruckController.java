@@ -4,10 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.DTO.FoodTruckDTO;
+import org.example.trucksy.DTO.LocationDTO;
+import org.example.trucksy.DTOOut.NearbyTruckResponse;
 import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Service.FoodTruckService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -44,5 +48,16 @@ public class FoodTruckController {
     @GetMapping("/get-foodTrucks-by-category/{category}")
     public ResponseEntity<?> getAllFoodTrucksByCategory(@PathVariable String category) {
         return ResponseEntity.status(200).body(foodTruckService.getAllFoodTruckByCategory(category));
+    }
+
+    @GetMapping("/get-nearest/{client_id}")
+    public ResponseEntity<?> topNearest(@PathVariable Integer client_id, @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.status(200).body(foodTruckService.findTopNearestTrucks(client_id, limit));
+    }
+
+    @PutMapping("/update-food-truck-location/{foodTruck_id}")
+    public ResponseEntity<?> updateFoodTruckLocation(@PathVariable Integer foodTruck_id , @Valid @RequestBody LocationDTO locationDTO) {
+        foodTruckService.updateFoodTruckLocation(foodTruck_id , locationDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("Location updated Successfully"));
     }
 }

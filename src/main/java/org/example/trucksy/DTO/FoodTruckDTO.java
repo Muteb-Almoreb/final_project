@@ -1,10 +1,9 @@
 package org.example.trucksy.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodTruckDTO {
@@ -12,6 +11,6 @@ public class FoodTruckDTO {
     private String name;
     private String description;
     private String category;
-    private Double latitude;
-    private Double longitude;
+    private String city;
+    private String district;
 }

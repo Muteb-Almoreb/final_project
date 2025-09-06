@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.DTO.ClientDTO;
+import org.example.trucksy.DTO.LocationDTO;
 import org.example.trucksy.Service.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,4 +34,10 @@ public class ClientController {
         return ResponseEntity.status(200).body(new ApiResponse("Client deleted successfully"));
     }
 
+
+    @PutMapping("/update-client-location/{client_id}")
+    public ResponseEntity<?> setClientLocation(@PathVariable Integer client_id, @Valid @RequestBody LocationDTO locationDTO) {
+        clientService.updateClientLocation(client_id,locationDTO);
+        return ResponseEntity.status(200).body(new ApiResponse("location updated successfully"));
+    }
 }
