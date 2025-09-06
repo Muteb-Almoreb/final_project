@@ -17,45 +17,68 @@ public class DiscountController {
 
     private final DiscountService discountService;
 
-    @GetMapping("/get")
-    public List<Discount> getAllDiscounts() {
-        return discountService.getAllDiscounts();
-    }
-
-    @GetMapping("/getBy/{ItemId}")
-    public ResponseEntity<?> getDiscountById(@PathVariable Integer ItemId) {
-        return ResponseEntity.status(200).body(discountService.getDiscountByItemId(ItemId));
-    }
-
-    @PostMapping("/add/{itemId}")
-    public ResponseEntity<?> addDiscount(@PathVariable Integer itemId, @RequestBody Discount discount) {
-        discountService.addDiscount(itemId, discount);
-        return ResponseEntity.status(200).body (new ApiResponse("Discount added successfully"));
-    }
-
-    @PutMapping("/update/{discountId}")
-    public ResponseEntity<?> updateDiscount(@PathVariable Integer discountId, @RequestBody Discount discount) {
-        discountService.updateDiscount(discountId, discount);
-        return ResponseEntity.status(200).body (new ApiResponse("Discount updated successfully"));
-    }
-
-    @DeleteMapping("/delete/{discountId}")
-    public ResponseEntity<?> deleteDiscount(@PathVariable Integer discountId) {
-        discountService.deleteDiscount(discountId);
-        return ResponseEntity.status(200).body (new ApiResponse("Discount deleted successfully"));
+    @GetMapping("/getAll/{ownerId}/{truckId}")
+    public ResponseEntity<?> getAllDiscounts(@PathVariable Integer ownerId,
+                                                          @PathVariable Integer truckId) {
+        return ResponseEntity.ok(discountService.getAllDiscountsByTruck(ownerId, truckId));
     }
 
 
-    @PutMapping("/activate/{discountId}")
-    public ResponseEntity<?> activateDiscount(@PathVariable Integer discountId) {
-        discountService.activateDiscount(discountId);
-        return ResponseEntity.status(200).body (new ApiResponse("Discount activated"));
+
+
+    // جلب الخصم المرتبط بآيتم معيّن
+    @GetMapping("/get/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<?> getDiscountByItemId(@PathVariable Integer ownerId,
+                                                 @PathVariable Integer truckId,
+                                                 @PathVariable Integer itemId) {
+        return ResponseEntity.ok(discountService.getDiscountByItemId(ownerId, truckId, itemId));
     }
 
-    @PutMapping("/deactivate/{discountId}")
-    public ResponseEntity<?> deactivateDiscount(@PathVariable Integer discountId) {
-        discountService.deactivateDiscount(discountId);
-        return ResponseEntity.status(200).body ( new ApiResponse("Discount deactivated"));
+    // إضافة خصم جديد لآيتم معيّن
+    @PostMapping("/add/{ownerId}/{truckId}/{itemId}")
+    public ResponseEntity<?> addDiscount(@PathVariable Integer ownerId,
+                                                   @PathVariable Integer truckId,
+                                                   @PathVariable Integer itemId,
+                                                   @RequestBody Discount discount) {
+        discountService.addDiscount(ownerId, truckId, itemId, discount);
+        return ResponseEntity.ok(new ApiResponse("Discount added successfully"));
+    }
+
+    // تحديث خصم
+    @PutMapping("/update/{ownerId}/{truckId}/{discountId}")
+    public ResponseEntity<?> updateDiscount(@PathVariable Integer ownerId,
+                                                      @PathVariable Integer truckId,
+                                                      @PathVariable Integer discountId,
+                                                      @RequestBody Discount discount) {
+        discountService.updateDiscount(ownerId, truckId, discountId, discount);
+        return ResponseEntity.ok(new ApiResponse("Discount updated successfully"));
+    }
+
+    // حذف خصم
+    @DeleteMapping("/delete/{ownerId}/{truckId}/{discountId}")
+    public ResponseEntity<?> deleteDiscount(@PathVariable Integer ownerId,
+                                                      @PathVariable Integer truckId,
+                                                      @PathVariable Integer discountId) {
+        discountService.deleteDiscount(ownerId, truckId, discountId);
+        return ResponseEntity.ok(new ApiResponse("Discount deleted successfully"));
+    }
+
+    // تفعيل خصم
+    @PutMapping("/activate/{ownerId}/{truckId}/{discountId}")
+    public ResponseEntity<?> activateDiscount(@PathVariable Integer ownerId,
+                                                        @PathVariable Integer truckId,
+                                                        @PathVariable Integer discountId) {
+        discountService.activateDiscount(ownerId, truckId, discountId);
+        return ResponseEntity.ok(new ApiResponse("Discount activated"));
+    }
+
+    // تعطيل خصم
+    @PutMapping("/deactivate/{ownerId}/{truckId}/{discountId}")
+    public ResponseEntity<?> deactivateDiscount(@PathVariable Integer ownerId,
+                                                          @PathVariable Integer truckId,
+                                                          @PathVariable Integer discountId) {
+        discountService.deactivateDiscount(ownerId, truckId, discountId);
+        return ResponseEntity.ok(new ApiResponse("Discount deactivated"));
     }
 }
 
