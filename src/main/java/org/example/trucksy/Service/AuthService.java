@@ -1,6 +1,7 @@
 package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.trucksy.Api.ApiException;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Repository.AuthRepository;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,20 @@ public class AuthService {
 
     public List<User> getAllUsers() {
         return authRepository.findAll();
+    }
+
+    public void deleteUser(Integer user_id) {
+        User user = authRepository.findUserById(user_id);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+        authRepository.deleteById(user_id);
+    }
+
+
+    public List<User> getAllOwners(){
+        return authRepository.findAllUsersWithRoleOwner();
+
+
     }
 }

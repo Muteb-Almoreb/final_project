@@ -60,4 +60,16 @@ public class FoodTruckController {
         foodTruckService.updateFoodTruckLocation(foodTruck_id , locationDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Location updated Successfully"));
     }
+
+    @PutMapping("/open-foodTruck/{owner_id}/{foodTruck_id}")
+    public ResponseEntity<?> openFoodTruck(@PathVariable Integer owner_id, @PathVariable Integer foodTruck_id) {
+        foodTruckService.openFoodTruck(owner_id , foodTruck_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Your food truck has been opened"));
+    }
+
+    @PutMapping("/close-foodTruck/{owner_id}/{foodTruck_id}")
+    public ResponseEntity<?> closeFoodTruck(@PathVariable Integer owner_id, @PathVariable Integer foodTruck_id) {
+        foodTruckService.closeFoodTruck(owner_id , foodTruck_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Your food truck has been closed"));
+    }
 }
