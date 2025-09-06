@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
 import org.example.trucksy.DTOOut.OrderDashboardDTOOut;
 import org.example.trucksy.DTOOut.OwnerDashboardDTO;
+import org.example.trucksy.DTOOut.ReviewAnalyzerDtoOut;
 import org.example.trucksy.Model.Dashboard;
 import org.example.trucksy.Model.Order;
 import org.example.trucksy.Model.Owner;
 import org.example.trucksy.Repository.DashboardRepository;
 import org.example.trucksy.Repository.OrderRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +22,7 @@ public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
     private final OrderRepository orderRepository;
-
+    private final AiReviewAnalyzerService aiReviewAnalyzerService;
 
 
     public void refreshDashboard(Integer owner_id) {
@@ -79,4 +81,14 @@ public class DashboardService {
                 )).toList();
     }
 
+    public ResponseEntity<ReviewAnalyzerDtoOut> reviewAnalyzer(Integer ownerId, Integer foodTruckId) {
+        try {
+            ReviewAnalyzerDtoOut analysis = aiReviewAnalyzerService.analyzeReviewsByFoodTruckId(ownerId, foodTruckId);
+            return ResponseEntity.ok(analysis);
+        } catch (ApiException e) {
+            throw e; // Re-throw API exceptions as-is
+        } catch (Exception e) {
+            throw new ApiException("Failed to analyze reviews: " + e.getMessage());
+        }
+    }
 }
