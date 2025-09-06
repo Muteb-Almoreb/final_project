@@ -36,7 +36,7 @@ public class ControllerAdvice {
     }
 
 
-    // SQL Constraint Ex:(Duplicate) Exception
+    // SQL Constraint Ex:(Duplicate) Exception.
     @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ApiResponse> SQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
         String msg = e.getMessage();
