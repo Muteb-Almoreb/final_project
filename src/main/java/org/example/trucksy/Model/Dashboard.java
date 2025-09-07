@@ -1,7 +1,10 @@
 package org.example.trucksy.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,10 @@ public class Dashboard {
 
     private Integer totalOrders;
 
+    private Integer totalCompletedOrders;
+
     private Double totalRevenue;
+
 
     private Integer predictedOrders;
 
@@ -32,4 +38,9 @@ public class Dashboard {
     private String topSellingItems;
 
     private LocalDate updateDate;
+
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private Owner owner;
 }

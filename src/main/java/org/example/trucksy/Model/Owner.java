@@ -3,9 +3,8 @@ package org.example.trucksy.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -23,10 +22,16 @@ public class Owner {
 
     @OneToOne
     @MapsId
+//    @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "owner")
     private Set<FoodTruck> foodTrucks;
+
+
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "owner")
+    @PrimaryKeyJoinColumn
+    private Dashboard dashboard;
 }

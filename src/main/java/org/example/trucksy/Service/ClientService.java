@@ -1,8 +1,12 @@
 package org.example.trucksy.Service;
 
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
 import org.example.trucksy.DTO.ClientDTO;
+import org.example.trucksy.DTO.GeocodeResult;
+import org.example.trucksy.DTO.LocationDTO;
 import org.example.trucksy.Model.Client;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Repository.AuthRepository;
@@ -15,8 +19,10 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
     private final AuthRepository authRepository;
+    private final HereGeocodingService hereGeocodingService;
 
     public void registerClient(ClientDTO clientDTO) {
+        System.out.println(clientDTO.getEmail());
         User user = new User();
         user.setUsername(clientDTO.getUsername());
         user.setPassword(clientDTO.getPassword()); // todo make it Encrypt
@@ -25,6 +31,9 @@ public class ClientService {
         user.setRole("CLIENT");
 
         Client client = new Client();
+        GeocodeResult gr = hereGeocodingService.geocodeCityDistrict(clientDTO.getCity(), clientDTO.getDistrict(), "SAU");
+        client.setLatitude(gr.lat());
+        client.setLongitude(gr.lon());
         client.setUser(user);
         clientRepository.save(client);
     }
@@ -51,4 +60,19 @@ public class ClientService {
         authRepository.delete(client.getUser());
         clientRepository.delete(client);
     }
+
+
+    // this method to client if he went to change his location
+    @Transactional
+    public void updateClientLocation(Integer clientId, LocationDTO locationDTO) {
+        Client client = clientRepository.findClientById(clientId);
+        if(client == null) {
+            throw new ApiException("Client not found");
+        }
+        GeocodeResult gr = hereGeocodingService.geocodeCityDistrict(locationDTO.getCity(), locationDTO.getDistrict(), "SAU");
+        client.setLatitude(gr.lat());
+        client.setLongitude(gr.lon());
+        clientRepository.save(client);
+    }
+
 }

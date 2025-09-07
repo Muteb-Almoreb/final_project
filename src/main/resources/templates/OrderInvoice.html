@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Trucksy - Order Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #ff6b35;
+        }
+
+        .invoice-header {
+            background: #ff6b35;
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+
+        .logo-company {
+            width: 60%;
+        }
+
+        .logo {
+            width: 60px;
+            height: 50px;
+            background: #ff8c42;
+            border: 2px solid white;
+            display: inline-block;
+            text-align: center;
+            line-height: 46px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 15px;
+            vertical-align: top;
+        }
+
+        .company-name {
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 5px;
+        }
+
+        .company-name h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .company-name p {
+            margin: 3px 0 0 0;
+            font-size: 13px;
+            color: #fff;
+        }
+
+        .invoice-title {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.9);
+            color: #ff6b35;
+            padding: 10px 15px;
+            border: 1px solid white;
+        }
+
+        .invoice-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #ff6b35;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 5px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fff8f5;
+            border: 1px solid #ffcab0;
+        }
+
+        .info-grid {
+            width: 100%;
+        }
+
+        .info-row {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .info-label {
+            display: inline-block;
+            width: 35%;
+            color: #666;
+            font-weight: bold;
+            vertical-align: top;
+        }
+
+        .info-value {
+            display: inline-block;
+            width: 60%;
+            color: #333;
+            font-weight: bold;
+            vertical-align: top;
+        }
+
+        .status-badge {
+            background: #4caf50;
+            color: white;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .customer-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .payment-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .payment-info-title {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .payment-id {
+            font-family: Courier, monospace;
+            background: #f5f5f5;
+            padding: 3px 6px;
+            font-size: 12px;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .order-items-section {
+            margin: 30px 0;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+
+        .items-table th {
+            background: #ff6b35;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .items-table tbody tr {
+            background: white;
+        }
+
+        .items-table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .quantity {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+            min-width: 25px;
+            display: inline-block;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #4caf50;
+            text-align: right;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border: 1px solid #ddd;
+        }
+
+        .summary-table th {
+            background: #ff6b35;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            background: white;
+        }
+
+        .food-truck-name {
+            font-weight: bold;
+            color: #ff6b35;
+            font-size: 15px;
+        }
+
+        .order-details {
+            color: #666;
+            font-weight: normal;
+        }
+
+        .truck-icon {
+            color: #ff6b35;
+            margin-right: 6px;
+            font-size: 16px;
+        }
+
+        .summary-table tfoot {
+            background: #fff8f5;
+        }
+
+        .summary-table tfoot td {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            border-top: 2px solid #ff6b35;
+            border-bottom: none;
+            padding: 18px 12px;
+        }
+
+        .total-label {
+            text-align: right;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .total-amount {
+            color: #ff6b35;
+            font-size: 20px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .invoice-footer {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff8f5;
+            border: 1px solid #ffcab0;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .footer-highlight {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        /* Simple responsive rules - basic only */
+        @media print {
+            body { margin: 0; padding: 10px; }
+            .invoice-container { border: none; }
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+    <!-- Header -->
+    <div class="invoice-header">
+        <div class="logo-company">
+            <div class="logo">🚚</div>
+            <div class="company-name">
+                <h1>trucksy</h1>
+                <p>Food Truck Order Management Platform</p>
+            </div>
+        </div>
+        <div class="invoice-title">ORDER INVOICE</div>
+    </div>
+
+    <!-- Body -->
+    <div class="invoice-body">
+        <!-- Order Details -->
+        <div class="info-section">
+            <h3 class="section-title">Order Information</h3>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Order ID:</span>
+                    <span class="info-value">#<span th:text="${orderId}">ORD-2025-001</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value" th:text="${creationDate}">2025-09-05</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value">
+                        <span class="status-badge" th:text="${orderStatus}">PAID</span>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Food Truck:</span>
+                    <span class="info-value">
+                        <span class="truck-icon">🚚</span>
+                        <span th:text="${foodTruckName}" class="food-truck-name">Burger Express</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="customer-section">
+                <h3 class="section-title">Customer Details</h3>
+                <div class="info-grid">
+                    <div class="info-row">
+                        <span class="info-label">Customer:</span>
+                        <span class="info-value" th:text="${clientName}">Ahmed Al-Salem</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" th:text="${customerEmail}">ahmed@example.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="payment-info">
+                <div class="payment-info-title">💳 Payment Confirmed</div>
+                <div>Transaction ID: <span class="payment-id" th:text="${paymentId}">pay_123456789</span></div>
+            </div>
+        </div>
+
+        <!-- Order Items (if available) -->
+        <div class="order-items-section" th:if="${orderLines != null and !orderLines.isEmpty()}">
+            <h3 class="section-title">Order Items</h3>
+            <table class="items-table">
+                <thead>
+                <tr>
+                    <th>ITEM</th>
+                    <th style="text-align: center;">QUANTITY</th>
+                    <th style="text-align: right;">UNIT PRICE</th>
+                    <th style="text-align: right;">TOTAL</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="line : ${orderLines}">
+                    <td class="item-name" th:text="${line.itemName}">Burger Deluxe</td>
+                    <td style="text-align: center;">
+                        <span class="quantity" th:text="${line.quantity}">2</span>
+                    </td>
+                    <td class="price" th:text="${line.unitPrice}">25.00 SAR</td>
+                    <td class="price" th:text="${line.lineTotal}">50.00 SAR</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Order Summary Table -->
+        <table class="summary-table">
+            <thead>
+            <tr>
+                <th>FOOD TRUCK</th>
+                <th>DESCRIPTION</th>
+                <th>DATE</th>
+                <th style="text-align: right;">TOTAL AMOUNT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="food-truck-name">
+                    <span class="truck-icon">🚚</span>
+                    <span th:text="${foodTruckName}">Burger Express</span>
+                </td>
+                <td class="order-details">Food Order • Mobile Payment</td>
+                <td th:text="${creationDate}">2025-09-05</td>
+                <td class="price" th:text="${totalPriceFormatted}">75.00 SAR</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="total-label">Total Paid</td>
+                <td class="total-amount" th:text="${totalPriceFormatted}">75.00 SAR</td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <!-- Footer -->
+        <div class="invoice-footer">
+            <p class="footer-text">🚚 This invoice was generated automatically by the <span class="footer-highlight">Trucksy</span> platform</p>
+            <p class="footer-text">Thank you for choosing our food truck services!</p>
+            <p class="footer-text">For support, please contact us through the Trucksy app</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
