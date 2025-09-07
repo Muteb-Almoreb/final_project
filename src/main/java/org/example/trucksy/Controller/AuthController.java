@@ -31,4 +31,16 @@ public class AuthController {
     public ResponseEntity<?> getAllOwners() {
         return ResponseEntity.status(200).body(authService.getAllOwners());
     }
+
+
+    @GetMapping("/get-all-clients")
+    public ResponseEntity<?> getAllClients() {
+        return ResponseEntity.status(200).body(authService.getAllClients());
+    }
+
+    @DeleteMapping("/delete-foodTruck/{foodTruck_id}")
+    public ResponseEntity<?> deleteFoodTruck(@PathVariable Integer foodTruck_id) {
+        authService.deleteFoodTruck(foodTruck_id);
+        return ResponseEntity.status(200).body(new ApiResponse("Food Truck deleted successfully"));
+    }
 }

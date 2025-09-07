@@ -2,8 +2,10 @@ package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
+import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Repository.AuthRepository;
+import org.example.trucksy.Repository.FoodTruckRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 public class AuthService {
 
     private final AuthRepository authRepository;
+    private final FoodTruckRepository foodTruckRepository;
 
     // this is for admin
 
@@ -31,7 +34,19 @@ public class AuthService {
 
     public List<User> getAllOwners(){
         return authRepository.findAllUsersWithRoleOwner();
-
-
     }
+
+
+    public List<User> getAllClients(){
+        return authRepository.findAllUsersWithRoleClient();
+    }
+
+    public void deleteFoodTruck(Integer food_truck_id) {
+        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(food_truck_id);
+        if (foodTruck == null) {
+            throw new ApiException("FoodTruck not found");
+        }
+        foodTruckRepository.deleteById(food_truck_id);
+    }
+
 }
