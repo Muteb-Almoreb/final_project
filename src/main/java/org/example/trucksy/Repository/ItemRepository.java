@@ -13,5 +13,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findAllByFoodTruck_Id(Integer truckId);
     Item findItemById(Integer id);
 
+    List<Item> findByFoodTruck_IdAndIsAvailableTrueAndPriceBetween(Integer foodTruckId, Double min, Double max);
+
+
+
 
 }

@@ -7,6 +7,8 @@ import org.example.trucksy.Service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/item")
 @RequiredArgsConstructor
@@ -72,6 +74,18 @@ public class ItemController {
         itemService.updatePrice(ownerId, truckId, itemId, newPrice);
         return ResponseEntity.ok(new ApiResponse("Item price updated"));
     }
+
+
+
+    @GetMapping("/filterByPrice/{clientId}/{truckId}/{min}/{max}")
+    public ResponseEntity<List<Item>> getItemsByPriceRange(@PathVariable Integer clientId,
+                                                           @PathVariable Integer truckId,
+                                                           @PathVariable Double min,
+                                                           @PathVariable Double max) {
+        return ResponseEntity.ok(itemService.getItemsByPriceRangeForClient(clientId, truckId, min, max));
+    }
+
+
 
 
 }
