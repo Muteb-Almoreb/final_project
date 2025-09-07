@@ -41,4 +41,23 @@ public class DashboardController {
     public ResponseEntity<DashBoardAnalyzerDtoOut> analyzeDashboard(@AuthenticationPrincipal User user) {
         return dashboardService.analyzeDashboard(user.getId());
     }
+
+
+    @GetMapping("/get-Placed-orders")
+    public ResponseEntity<?> getPlacedOrders(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(dashboardService.getPLACEDOrdersByOwner(user.getId()));
+    }
+
+
+    @GetMapping("/get-ready-orders")
+    public ResponseEntity<?> getReadyOrders(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(dashboardService.getReadyOrdersByOwner(user.getId()));
+    }
+
+    @GetMapping("/get-completed-orders")
+    public ResponseEntity<?> getOrders(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(dashboardService.getCompletedOrdersByOwner(user.getId()));
+    }
+
+
 }
