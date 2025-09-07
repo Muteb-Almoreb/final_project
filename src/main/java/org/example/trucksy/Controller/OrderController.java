@@ -71,13 +71,13 @@ public class OrderController {
         ));
     }
 
-    //todo بستشير الشباب اذا ننقلها للفود ترك سيرفس
+
     @GetMapping("/foodtruck/{foodTruckId}")
     public ResponseEntity<List<OrderDtoOut>> getOrdersForFoodTruck(@PathVariable Integer foodTruckId) {
         return ResponseEntity.status(200).body(orderService.getOrdersForFoodTruckDto(foodTruckId));
     }
 
-    // todo change url name
+
     @GetMapping("/client")
     public ResponseEntity<List<OrderDtoOut>> getOrdersForClient(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(orderService.getOrdersForClientDto(user.getId()));

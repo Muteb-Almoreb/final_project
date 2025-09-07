@@ -11,10 +11,10 @@ import org.example.trucksy.Model.Order;
 import org.example.trucksy.Model.Owner;
 import org.example.trucksy.Repository.DashboardRepository;
 import org.example.trucksy.Repository.OrderRepository;
+import org.example.trucksy.Repository.OwnerRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,6 +25,7 @@ public class DashboardService {
     private final OrderRepository orderRepository;
     private final AiReviewAnalyzerService aiReviewAnalyzerService;
     private final AiDashboardAnalyzerService aiDashboardAnalyzerService;
+    private final OwnerRepository ownerRepository;
 
 
     public void refreshDashboard(Integer owner_id) {
@@ -103,5 +104,59 @@ public class DashboardService {
         } catch (Exception e) {
             throw new ApiException("Failed to analyze dashboard: " + e.getMessage());
         }
+    }
+
+
+    public List<OrderDashboardDTOOut> getPLACEDOrdersByOwner(Integer ownerId) {
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if (owner == null) {
+            throw new ApiException("Owner not found");
+        }
+        List<Order> placedOrders = orderRepository.findAllByStatus("PLACED");
+
+        return placedOrders.stream()
+                .map(o-> new OrderDashboardDTOOut(
+                        o.getId(),
+                        o.getOrderDate(),
+                        o.getClient().getUser().getUsername(),
+                        o.getTotalPrice(),
+                        o.getStatus()
+                )).toList();
+    }
+
+
+    public List<OrderDashboardDTOOut> getReadyOrdersByOwner(Integer ownerId) {
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if (owner == null) {
+            throw new ApiException("Owner not found");
+        }
+        List<Order> readyOrders = orderRepository.findAllByStatus("READY");
+
+        return readyOrders.stream()
+                .map(o-> new OrderDashboardDTOOut(
+                        o.getId(),
+                        o.getOrderDate(),
+                        o.getClient().getUser().getUsername(),
+                        o.getTotalPrice(),
+                        o.getStatus()
+                )).toList();
+    }
+
+
+    public List<OrderDashboardDTOOut> getCompletedOrdersByOwner(Integer ownerId) {
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if (owner == null) {
+            throw new ApiException("Owner not found");
+        }
+        List<Order> completedOrders = orderRepository.findAllByStatus("COMPLETED");
+
+        return completedOrders.stream()
+                .map(o-> new OrderDashboardDTOOut(
+                        o.getId(),
+                        o.getOrderDate(),
+                        o.getClient().getUser().getUsername(),
+                        o.getTotalPrice(),
+                        o.getStatus()
+                )).toList();
     }
 }
