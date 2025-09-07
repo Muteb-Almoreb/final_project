@@ -2,10 +2,8 @@ package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
-import org.example.trucksy.Model.Discount;
-import org.example.trucksy.Model.FoodTruck;
-import org.example.trucksy.Model.Item;
-import org.example.trucksy.Model.Owner;
+import org.example.trucksy.Model.*;
+import org.example.trucksy.Repository.ClientRepository;
 import org.example.trucksy.Repository.FoodTruckRepository;
 import org.example.trucksy.Repository.ItemRepository;
 import org.example.trucksy.Repository.OwnerRepository;
@@ -21,6 +19,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final FoodTruckRepository foodTruckRepository;
     private final OwnerRepository ownerRepository;
+    private final ClientRepository clientRepository;
 
 
 
@@ -132,6 +131,26 @@ public class ItemService {
         item.setUpdateDate(LocalDate.now());
         itemRepository.save(item);
     }
+
+
+    public List<Item> getItemsByPriceRangeForClient(Integer clientId, Integer truckId, Double min, Double max) {
+        if (clientId == null) throw new ApiException("ClientId is required");
+        if (truckId == null) throw new ApiException("TruckId is required");
+        if (min == null || max == null) throw new ApiException("Min and Max prices are required");
+        if (min < 0 || max < 0) throw new ApiException("Price must be >= 0");
+        if (min > max) throw new ApiException("Min price cannot be greater than Max");
+
+        FoodTruck truck = foodTruckRepository.findFoodTruckById(truckId);
+        if (truck == null) throw new ApiException("FoodTruck not found");
+
+
+         Client client = clientRepository.findClientById(clientId);
+         if(client == null) throw new ApiException("Client not found");
+
+        return itemRepository.findByFoodTruck_IdAndIsAvailableTrueAndPriceBetween(truckId, min, max);
+    }
+
+
 
 
 }

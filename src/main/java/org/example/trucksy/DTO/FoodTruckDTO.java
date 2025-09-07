@@ -25,8 +25,8 @@ public class FoodTruckDTO {
 
     @NotEmpty(message = "Category must not be empty")
     @Pattern(
-            regexp = "(?i)^(Burger|Pizza|Coffee|Dessert|Other)$",
-            message = "Category must be one of: Burger, Pizza, Coffee, Dessert, Other"
+            regexp = "(?i)^(Burger|Pizza|Coffee|Dessert|Other|breakfast|Lunch|Dinner)$",
+            message = "Category must be one of: Burger, Pizza, Coffee, Dessert, breakfast ,Lunch,Dinner,Other"
     )
     private String category;
     private String city;
