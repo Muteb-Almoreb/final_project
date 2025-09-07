@@ -2,6 +2,7 @@ package org.example.trucksy.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiException;
+import org.example.trucksy.DTOOut.DashBoardAnalyzerDtoOut;
 import org.example.trucksy.DTOOut.OrderDashboardDTOOut;
 import org.example.trucksy.DTOOut.OwnerDashboardDTO;
 import org.example.trucksy.DTOOut.ReviewAnalyzerDtoOut;
@@ -23,6 +24,7 @@ public class DashboardService {
     private final DashboardRepository dashboardRepository;
     private final OrderRepository orderRepository;
     private final AiReviewAnalyzerService aiReviewAnalyzerService;
+    private final AiDashboardAnalyzerService aiDashboardAnalyzerService;
 
 
     public void refreshDashboard(Integer owner_id) {
@@ -89,6 +91,17 @@ public class DashboardService {
             throw e; // Re-throw API exceptions as-is
         } catch (Exception e) {
             throw new ApiException("Failed to analyze reviews: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<DashBoardAnalyzerDtoOut> analyzeDashboard(Integer ownerId) {
+        try {
+            DashBoardAnalyzerDtoOut analysis = aiDashboardAnalyzerService.analyzeDashboardByOwnerId(ownerId);
+            return ResponseEntity.ok(analysis);
+        } catch (ApiException e) {
+            throw e; // Re-throw API exceptions as-is
+        } catch (Exception e) {
+            throw new ApiException("Failed to analyze dashboard: " + e.getMessage());
         }
     }
 }

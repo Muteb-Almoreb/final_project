@@ -2,6 +2,7 @@ package org.example.trucksy.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
+import org.example.trucksy.DTOOut.DashBoardAnalyzerDtoOut;
 import org.example.trucksy.DTOOut.ReviewAnalyzerDtoOut;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Service.DashboardService;
@@ -29,10 +30,15 @@ public class DashboardController {
 
     @GetMapping("/get-all-order-by-foodTruck/{foodTruck_id}")
     public ResponseEntity<?> getAllOrderByFoodTruck(@PathVariable Integer foodTruck_id){
-       return ResponseEntity.status(200).body(dashboardService.getOrdersByFoodTruck(foodTruck_id));
+        return ResponseEntity.status(200).body(dashboardService.getOrdersByFoodTruck(foodTruck_id));
     }
     @GetMapping("/analyze-reviews/{foodTruckId}")
     public ResponseEntity<ReviewAnalyzerDtoOut> analyzeReviews(@AuthenticationPrincipal User user ,@PathVariable Integer foodTruckId) {
         return dashboardService.reviewAnalyzer(user.getId(), foodTruckId);
+    }
+
+    @GetMapping("/analyze-dashboard/{ownerId}")
+    public ResponseEntity<DashBoardAnalyzerDtoOut> analyzeDashboard(@PathVariable Integer ownerId) {
+        return dashboardService.analyzeDashboard(ownerId);
     }
 }
