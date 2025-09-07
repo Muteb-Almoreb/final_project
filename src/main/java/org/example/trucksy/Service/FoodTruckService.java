@@ -14,6 +14,7 @@ import org.example.trucksy.Repository.ClientRepository;
 import org.example.trucksy.Repository.FoodTruckRepository;
 import org.example.trucksy.Repository.OwnerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +28,7 @@ public class FoodTruckService {
     private final HereGeocodingService hereGeocodingService;
     private final ClientRepository clientRepository;
     private final DistanceService distanceService;
+    private final StorageService storage;
 
     public void addFoodTruck(Integer owner_id ,FoodTruckDTO foodTruckDTO) {
         Owner owner = ownerRepository.findOwnerById(owner_id);
@@ -65,17 +67,7 @@ public class FoodTruckService {
     }
 
     public void deleteFoodTruck(Integer owner_id , Integer id) {
-        Owner owner = ownerRepository.findOwnerById(owner_id);
-        if(owner == null){
-            throw new ApiException("Owner not found");
-        }
-        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(id);
-        if(foodTruck == null){
-            throw new ApiException("FoodTruck not found");
-        }
-        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
-            throw new ApiException("You don't own this food truck");
-        }
+        FoodTruck foodTruck = mustOwnTruck(owner_id, id);
         foodTruckRepository.delete(foodTruck);
     }
 
@@ -102,7 +94,8 @@ public class FoodTruckService {
                         r.getCity(),
                         r.getDistrict(),
                         r.getLatitude(),//ماتحتاجها بس حطيتها عشان اشيل الerror
-                        r.getLongitude()//ماتحتاجها بس حطيتها عشان اشيل الerror
+                        r.getLongitude(),//ماتحتاجها بس حطيتها عشان اشيل الerror
+                        r.getImageUrl()
                 )).toList();
     }
 
@@ -123,7 +116,7 @@ public class FoodTruckService {
                 .map(ft -> new NearbyTruckResponse(
                         ft.getId(), ft.getName(), ft.getDescription(), ft.getCategory(),
                         ft.getLatitude(), ft.getLongitude(),
-                        distanceService.km(cLat, cLon, ft.getLatitude(), ft.getLongitude())
+                        distanceService.km(cLat, cLon, ft.getLatitude(), ft.getLongitude()) ,ft.getImageUrl()
                 ))
                 .sorted(Comparator.comparingDouble(NearbyTruckResponse::distanceKm))
                 .limit(Math.max(1, limit))
@@ -153,35 +146,45 @@ public class FoodTruckService {
 
 
     public void openFoodTruck(Integer owner_id , Integer foodTruck_id) {
-        Owner owner = ownerRepository.findOwnerById(owner_id);
-        if(owner == null){
-            throw new ApiException("Owner not found");
-        }
-        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
-        if(foodTruck == null){
-            throw new ApiException("FoodTruck not found");
-        }
-        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
-            throw new ApiException("You don't own this food truck");
-        }
+        FoodTruck foodTruck = mustOwnTruck(owner_id, foodTruck_id);
         foodTruck.setStatus("OPEN");
         foodTruckRepository.save(foodTruck);
     }
 
 
     public void closeFoodTruck(Integer owner_id , Integer foodTruck_id) {
-        Owner owner = ownerRepository.findOwnerById(owner_id);
-        if(owner == null){
-            throw new ApiException("Owner not found");
-        }
-        FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
-        if(foodTruck == null){
-            throw new ApiException("FoodTruck not found");
-        }
-        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
-            throw new ApiException("You don't own this food truck");
-        }
+        FoodTruck foodTruck = mustOwnTruck(owner_id, foodTruck_id);
         foodTruck.setStatus("CLOSE");
         foodTruckRepository.save(foodTruck);
+    }
+
+
+    private FoodTruck mustOwnTruck(Integer ownerId, Integer truckId) {
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if (owner == null) throw new ApiException("Owner not found");
+        FoodTruck truck = foodTruckRepository.findFoodTruckById(truckId);
+        if (truck == null) throw new ApiException("FoodTruck not found");
+        if (truck.getOwner() == null || !truck.getOwner().getId().equals(owner.getId()))
+            throw new ApiException("You don't own this food truck");
+        return truck;
+    }
+
+
+    public String uploadTruckImage(Integer ownerId, Integer truckId, MultipartFile file) {
+        FoodTruck truck = mustOwnTruck(ownerId, truckId);
+        // امسح القديمة إن وجدت
+        storage.deleteIfExists(truck.getImageKey());
+
+        String key = StorageService.buildKey(
+                "foodtrucks/%d/%d".formatted(ownerId, truckId),
+                file.getOriginalFilename(),
+                "jpg"
+        );
+        StorageService.UploadResult ur = storage.upload(file, key);
+
+        truck.setImageKey(ur.key());
+        truck.setImageUrl(ur.url());
+        foodTruckRepository.save(truck);
+        return ur.url();
     }
 }

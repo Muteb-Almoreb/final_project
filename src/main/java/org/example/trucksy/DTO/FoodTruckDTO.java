@@ -32,7 +32,8 @@ public class FoodTruckDTO {
     private String city;
     private String district;
 
-
     private Double latitude = null;
     private Double longitude = null;
+
+    private String imageUrl;
 }

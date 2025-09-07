@@ -5,11 +5,14 @@ import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.Model.Item;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Service.ItemService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/item")
@@ -85,6 +88,13 @@ public class ItemController {
                                                            @PathVariable Double min,
                                                            @PathVariable Double max) {
         return ResponseEntity.ok(itemService.getItemsByPriceRangeForClient(user.getId(), truckId, min, max));
+    }
+
+
+    @PostMapping(value = "/image/{truckId}/{itemId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadItemImage(@AuthenticationPrincipal User user, @PathVariable Integer truckId, @PathVariable Integer itemId, @RequestPart("file") MultipartFile file) {
+        String url = itemService.uploadItemImage(user.getId(), truckId, itemId, file);
+        return ResponseEntity.ok(Map.of("imageUrl", url));
     }
 
 

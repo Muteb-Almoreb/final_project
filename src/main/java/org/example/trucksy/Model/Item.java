@@ -53,6 +53,10 @@ public class Item {
     @UpdateTimestamp
     private LocalDate updateDate;
 
+    private String imageUrl;
+
+    private String imageKey;
+
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "item")
     @PrimaryKeyJoinColumn
