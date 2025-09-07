@@ -37,8 +37,8 @@ public class DashboardController {
         return dashboardService.reviewAnalyzer(user.getId(), foodTruckId);
     }
 
-    @GetMapping("/analyze-dashboard/{ownerId}")
-    public ResponseEntity<DashBoardAnalyzerDtoOut> analyzeDashboard(@PathVariable Integer ownerId) {
-        return dashboardService.analyzeDashboard(ownerId);
+    @GetMapping("/analyze-dashboard")
+    public ResponseEntity<DashBoardAnalyzerDtoOut> analyzeDashboard(@AuthenticationPrincipal User user) {
+        return dashboardService.analyzeDashboard(user.getId());
     }
 }

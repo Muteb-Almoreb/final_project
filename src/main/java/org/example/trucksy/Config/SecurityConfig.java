@@ -75,6 +75,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/foodTruck/update-food-truck-location/**").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/foodTruck/open-foodTruck/**").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/foodTruck/close-foodTruck/**").hasAuthority("OWNER")
+                ///api/v1/dashboard/analyze-dashboard
+                .requestMatchers("/api/v1/dashboard/analyze-dashboard/**").hasAuthority("OWNER")
+
 
                 // ========= OWNER =========
                 .requestMatchers("/api/v1/item/**").hasAuthority("OWNER")
