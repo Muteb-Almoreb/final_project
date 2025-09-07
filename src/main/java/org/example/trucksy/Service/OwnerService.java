@@ -8,6 +8,7 @@ import org.example.trucksy.Model.*;
 import org.example.trucksy.Repository.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +37,7 @@ public class OwnerService {
     public void registerOwner(OwnerDTO ownerDTO) {
         User user = new User();
         user.setUsername(ownerDTO.getUsername());
-        user.setPassword(ownerDTO.getPassword());
+        user.setPassword(new BCryptPasswordEncoder().encode(ownerDTO.getPassword()));
         user.setEmail(ownerDTO.getEmail());
         user.setPhoneNumber(ownerDTO.getPhone());
         user.setRole("OWNER");
@@ -67,7 +68,7 @@ public class OwnerService {
         }
         User user = owner.getUser();
         user.setUsername(ownerDTO.getUsername());
-        user.setPassword(ownerDTO.getPassword());
+        user.setPassword(new BCryptPasswordEncoder().encode(ownerDTO.getPassword()));
         user.setEmail(ownerDTO.getEmail());
         user.setPhoneNumber(ownerDTO.getPhone());
         ownerRepository.save(owner);

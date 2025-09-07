@@ -114,9 +114,9 @@ public class OrderService {
         order.setClient(client);
         order.setFoodTruck(foodTruck);
         orderRepository.save(order);
-
+    String awsurl ="http://localhost:8080";
         String url = "https://api.moyasar.com/v1/payments/";
-        String callbackUrl = "http://localhost:8080/api/v1/order/callback/" + order.getId();
+        String callbackUrl = awsurl + "/api/v1/order/callback/" + order.getId();
 
         String requestBody = String.format(
                 "source[type]=card" +

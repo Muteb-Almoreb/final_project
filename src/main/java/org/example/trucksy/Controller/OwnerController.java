@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trucksy.Api.ApiResponse;
 import org.example.trucksy.DTO.OwnerDTO;
+import org.example.trucksy.Model.User;
 import org.example.trucksy.Service.OwnerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,23 +23,23 @@ public class OwnerController {
         return ResponseEntity.status(200).body(new ApiResponse("Owner registered successfully"));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOwner(@PathVariable Integer id, @Valid @RequestBody OwnerDTO ownerDTO) {
-        ownerService.updateOwner(id, ownerDTO);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateOwner(@AuthenticationPrincipal User user, @Valid @RequestBody OwnerDTO ownerDTO) {
+        ownerService.updateOwner(user.getId(), ownerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("Owner updated successfully"));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOwner(@PathVariable Integer id) {
-        ownerService.deleteOwner(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteOwner(@AuthenticationPrincipal User user) {
+        ownerService.deleteOwner(user.getId());
         return ResponseEntity.status(200).body(new ApiResponse("Owner deleted successfully"));
     }
 
     // Subscription payment endpoint - following the same style as addOrder
-    @PostMapping("/subscribe/{ownerId}") // todo after Security added remove ownerId from the path
-    public ResponseEntity<?> subscribeOwner(@PathVariable Integer ownerId) {
+    @PostMapping("/subscribe") // todo after Security added remove ownerId from the path
+    public ResponseEntity<?> subscribeOwner(@AuthenticationPrincipal User user) {
         // NOTE: Return service ResponseEntity directly to avoid double-wrapping.
-        return ownerService.ownerSubscribePayment(ownerId);
+        return ownerService.ownerSubscribePayment(user.getId());
     }
 
     //todo test the call manually and after deployment it will call directly from subscribe endpoint with the Callback Url

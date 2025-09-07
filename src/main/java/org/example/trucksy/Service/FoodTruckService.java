@@ -133,10 +133,17 @@ public class FoodTruckService {
 
     // this method to foodTruck Owner if he went to change his truck location
     @Transactional
-    public void updateFoodTruckLocation(Integer foodTruck_id, LocationDTO locationDTO) {
+    public void updateFoodTruckLocation(Integer owner_id , Integer foodTruck_id, LocationDTO locationDTO) {
+        Owner owner = ownerRepository.findOwnerById(owner_id);
+        if(owner == null){
+            throw new ApiException("Owner not found");
+        }
         FoodTruck foodTruck = foodTruckRepository.findFoodTruckById(foodTruck_id);
         if(foodTruck == null) {
             throw new ApiException("food Truck not found");
+        }
+        if (!Objects.equals(foodTruck.getOwner().getId(), owner.getId())) {
+            throw new ApiException("You don't own this food truck");
         }
         GeocodeResult gr = hereGeocodingService.geocodeCityDistrict(locationDTO.getCity(), locationDTO.getDistrict(), "SAU");
         foodTruck.setLatitude(gr.lat());
