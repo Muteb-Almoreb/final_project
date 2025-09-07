@@ -144,7 +144,7 @@ public class ItemService {
         if (truck == null) throw new ApiException("FoodTruck not found");
 
 
-         Client client = clientRepository.findClientById(clientId);
+        Client client = clientRepository.findClientById(clientId);
          if(client == null) throw new ApiException("Client not found");
 
         return itemRepository.findByFoodTruck_IdAndIsAvailableTrueAndPriceBetween(truckId, min, max);

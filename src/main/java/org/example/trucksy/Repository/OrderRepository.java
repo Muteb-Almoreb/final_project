@@ -41,6 +41,14 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     Integer countCompletedOrdersByOwner(@Param("ownerId") Integer ownerId);
 
+//    @Query("""
+//       select count(o)
+//       from Order o
+//       where o.foodTruck.owner.id = :ownerId
+//         and o.status = 'PLACED'
+//    """)
+//    Integer countPLACEDOrdersByOwner(@Param("ownerId") Integer ownerId);
+
     @Query("""
         select o from Order o 
         where o.foodTruck.owner.id = :ownerId 
@@ -54,4 +62,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
         order by o.orderDate desc
     """)
     List<Order> findByOwnerIdOrderByOrderDateDesc(@Param("ownerId") Integer ownerId);
+
+
+    List<Order> findAllByStatus(String status);
+
 }

@@ -79,12 +79,12 @@ public class ItemController {
 
 
 
-    @GetMapping("/filterByPrice/{clientId}/{truckId}/{min}/{max}")
-    public ResponseEntity<List<Item>> getItemsByPriceRange(@PathVariable Integer clientId,
+    @GetMapping("/filterByPrice/{truckId}/{min}/{max}")
+    public ResponseEntity<List<Item>> getItemsByPriceRange(@AuthenticationPrincipal User user,
                                                            @PathVariable Integer truckId,
                                                            @PathVariable Double min,
                                                            @PathVariable Double max) {
-        return ResponseEntity.ok(itemService.getItemsByPriceRangeForClient(clientId, truckId, min, max));
+        return ResponseEntity.ok(itemService.getItemsByPriceRangeForClient(user.getId(), truckId, min, max));
     }
 
 
