@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/review/get-reviews-by-client/**").hasAuthority("CLIENT")
                 .requestMatchers("/api/v1/foodTruck/get-foodTrucks-by-category/**").hasAuthority("CLIENT")
                 .requestMatchers("/api/v1/foodTruck/get-nearest/**").hasAuthority("CLIENT")
+                .requestMatchers("/api/v1/item/filterByPrice/**").hasAuthority("CLIENT")
 
                 // ========= OWNER =========
                 .requestMatchers("/api/v1/dashboard/**").hasAuthority("OWNER")
