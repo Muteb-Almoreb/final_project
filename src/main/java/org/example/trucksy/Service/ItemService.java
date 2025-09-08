@@ -8,6 +8,7 @@ import org.example.trucksy.Repository.FoodTruckRepository;
 import org.example.trucksy.Repository.ItemRepository;
 import org.example.trucksy.Repository.OwnerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ItemService {
     private final FoodTruckRepository foodTruckRepository;
     private final OwnerRepository ownerRepository;
     private final ClientRepository clientRepository;
+    private final StorageService storage;
 
 
 
@@ -151,6 +153,28 @@ public class ItemService {
     }
 
 
+    public String uploadItemImage(Integer ownerId, Integer truckId, Integer itemId, MultipartFile file) {
+        FoodTruck truck = mustOwnTruck(ownerId, truckId);
+        Item item = itemRepository.findItemsById(itemId);
+        if (item == null || item.getFoodTruck() == null || !item.getFoodTruck().getId().equals(truckId))
+            throw new ApiException("Item not found in this FoodTruck");
+
+        storage.deleteIfExists(item.getImageKey());
+
+        String key = StorageService.buildKey(
+                "items/%d/%d/%d".formatted(ownerId, truckId, itemId),
+                file.getOriginalFilename(),
+                "jpg"
+        );
+        StorageService.UploadResult ur = storage.upload(file, key);
+
+        item.setImageKey(ur.key());
+        item.setImageUrl(ur.url());
+        item.setUpdateDate(LocalDate.now());
+        itemRepository.save(item);
+
+        return ur.url();
+    }
 
 
 }

@@ -9,11 +9,14 @@ import org.example.trucksy.DTOOut.NearbyTruckResponse;
 import org.example.trucksy.Model.FoodTruck;
 import org.example.trucksy.Model.User;
 import org.example.trucksy.Service.FoodTruckService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -75,4 +78,12 @@ public class FoodTruckController {
         foodTruckService.closeFoodTruck(user.getId(), foodTruck_id);
         return ResponseEntity.status(200).body(new ApiResponse("Your food truck has been closed"));
     }
+
+    @PostMapping(value = "/upload-image/{truck_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<?> uploadTruckImage(@AuthenticationPrincipal User user, @PathVariable Integer truck_id, @RequestPart("file") MultipartFile file) {
+        String url = foodTruckService.uploadTruckImage(user.getId(), truck_id, file);
+        return ResponseEntity.ok(Map.of("imageUrl", url));
+    }
+
 }

@@ -7,6 +7,8 @@ public record NearbyTruckResponse(
         String category,
         Double latitude,
         Double longitude,
-        double distanceKm
+        double distanceKm,
+        String imageUrl
+
 ) {}
 
