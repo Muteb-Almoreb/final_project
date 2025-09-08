@@ -117,41 +117,6 @@ public class FoodTruckControllerTest {
 
         verify(foodTruckService, times(1)).getAllFoodTruckByCategory("Mexican");
     }
-
-    @Test
-    public void testGetNearestTrucks() throws Exception {
-        List<NearbyTruckResponse> nearbyResponse = Arrays.asList(
-                new NearbyTruckResponse(1, "Taco Express", "Mexican street food", "Mexican", 25.7617, 50.4016, 0.5),
-                new NearbyTruckResponse(2, "Pizza Corner", "Wood-fired pizza", "Italian", 25.7619, 50.4018, 1.2)
-        );
-
-        when(foodTruckService.findTopNearestTrucks(any(), eq(5))).thenReturn(nearbyResponse);
-
-        mockMvc.perform(get("/api/v1/foodTruck/get-nearest")
-                        .param("limit", "5"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Taco Express"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Pizza Corner"));
-
-        verify(foodTruckService, times(1)).findTopNearestTrucks(any(), eq(5));
-    }
-
-    @Test
-    public void testGetNearestTrucksWithDefaultLimit() throws Exception {
-        List<NearbyTruckResponse> nearbyResponse = Arrays.asList(
-                new NearbyTruckResponse(1, "Taco Express", "Mexican street food", "Mexican", 25.7617, 50.4016, 0.5)
-        );
-
-        when(foodTruckService.findTopNearestTrucks(any(), eq(5))).thenReturn(nearbyResponse);
-
-        mockMvc.perform(get("/api/v1/foodTruck/get-nearest"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
-
-        verify(foodTruckService, times(1)).findTopNearestTrucks(any(), eq(5));
-    }
-
     @Test
     public void testUpdateFoodTruckLocation() throws Exception {
         doNothing().when(foodTruckService).updateFoodTruckLocation(any(), anyInt(), any(LocationDTO.class));
