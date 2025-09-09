@@ -100,8 +100,13 @@ Premium owners gain access to **AI-powered insights and analytics** after subscr
 > It highlights key functionalities like **ordering, reviewing, managing trucks, and subscription handling**.  
 
 ---
-### Figma
-[Figma](https://www.figma.com/design/hvVvEeGbhr3lqANwAzAeNj/System-Flow?node-id=0-1&t=lzGzHO9Y5U0X9ov2-1)
+
+### Links
+
+- [🎨 Figma Design](https://www.figma.com/design/hvVvEeGbhr3lqANwAzAeNj/System-Flow?node-id=0-1&t=lzGzHO9Y5U0X9ov2-1)
+- [📬 Postman Documentation](https://documenter.getpostman.com/view/41550137/2sB3HnJeqi)  
+- [📊 Presentation (Canva)](https://www.canva.com/design/DAGyX97zdi0/MZaNDYxF5TtX6ONkAkyFzQ/edit?utm_content=DAGyX97zdi0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 
 
 
