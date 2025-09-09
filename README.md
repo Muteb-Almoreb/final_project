@@ -114,3 +114,152 @@ Premium owners gain access to **AI-powered insights and analytics** after subscr
 Trucksy is designed to be a **full-featured backend solution** for food trucks in Riyadh.  
 It balances **customer convenience, owner management, and admin control**, while integrating **AI-powered insights** for premium users.  
 With clear data modeling, secure payment integration, and location-based services, Trucksy provides a complete ecosystem for food truck operations.  
+--------
+
+# API Endpoints Summary
+
+| Controller | Count |
+|---|---:|
+| AuthController | 5 |
+| BankCardController | 2 |
+| ClientController | 4 |
+| DashboardController | 8 |
+| DiscountController | 7 |
+| FoodTruckController | 10 |
+| OrderController | 8 |
+| OwnerController | 6 |
+| ReviewController | 4 |
+| WhatsAppController | 1 |
+| ItemController | 9 |
+| **Total** | **64** |
+
+---
+
+## AuthController (`/api/v1/auth`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| GET | `/get` | Get all users |  |
+| DELETE | `/delete/{user_id}` | Delete user |  |
+| GET | `/get-all-owners` | Get all owners |  |
+| GET | `/get-all-clients` | Get all clients |  |
+| DELETE | `/delete-foodTruck/{foodTruck_id}` | Delete a food truck (admin) |  |
+
+---
+
+## BankCardController (`/api/v1/bankcard`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add` | Add bank card (current user) |  |
+| GET | `/get` | Get bank card by current user |  |
+
+---
+
+## ClientController (`/api/v1/client`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add` | Register client |  |
+| PUT | `/update` | Update client (current user) |  |
+| DELETE | `/delete` | Delete client (current user) |  |
+| PUT | `/update-client-location` | Update client location |  |
+
+---
+
+## DashboardController (`/api/v1/dashboard`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| PUT | `/refresh-dashboard` | Refresh owner dashboard |  |
+| GET | `/get-owner-dashboard` | Get owner dashboard |  |
+| GET | `/get-all-order-by-foodTruck/{foodTruck_id}` | Orders by truck |  |
+| GET | `/analyze-reviews/{foodTruckId}` | AI review analyzer |  |
+| GET | `/analyze-dashboard` | AI dashboard analyzer |  |
+| GET | `/get-Placed-orders` | Get PLACED orders (owner) |  |
+| GET | `/get-ready-orders` | Get READY orders (owner) |  |
+| GET | `/get-completed-orders` | Get COMPLETED orders (owner) |  |
+
+---
+
+## DiscountController (`/api/v1/discount`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| GET | `/getAll/{truckId}` | All discounts for a truck |  |
+| GET | `/get/{truckId}/{itemId}` | Discount by item |  |
+| POST | `/add/{truckId}/{itemId}` | Add discount to item |  |
+| PUT | `/update/{truckId}/{discountId}` | Update discount |  |
+| DELETE | `/delete/{truckId}/{discountId}` | Delete discount |  |
+| PUT | `/activate/{truckId}/{discountId}` | Activate discount |  |
+| PUT | `/deactivate/{truckId}/{discountId}` | Deactivate discount |  |
+
+---
+
+## FoodTruckController (`/api/v1/foodTruck`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add` | Add food truck |  |
+| PUT | `/update/{truck_id}` | Update food truck |  |
+| DELETE | `/delete/{truck_id}` | Delete food truck |  |
+| GET | `/get-all-trucks-by-owner_id` | All trucks for current owner |  |
+| GET | `/get-foodTrucks-by-category/{category}` | Trucks by category |  |
+| GET | `/get-nearest?limit={n}` | Top nearest trucks (client) |  |
+| PUT | `/update-food-truck-location/{foodTruck_id}` | Update truck location |  |
+| PUT | `/open-foodTruck/{foodTruck_id}` | Open truck |  |
+| PUT | `/close-foodTruck/{foodTruck_id}` | Close truck |  |
+| POST | `/upload-image/{truck_id}` | Upload truck image (multipart) |  |
+
+---
+
+## OrderController (`/api/v1/order`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add/{foodTruckId}` | Create order (client) |  |
+| POST | `/callback/{orderId}` | Payment callback (no PID) |  |
+| POST | `/callback/{orderId}/{paymentId}` | Payment callback (with PID) |  |
+| PUT | `/status/ready/{foodTruckId}/{orderId}` | Mark order READY (owner) |  |
+| PUT | `/status/completed/{foodTruckId}/{orderId}` | Mark order COMPLETED (owner) |  |
+| GET | `/foodtruck/{foodTruckId}` | List orders for a truck |  |
+| GET | `/client` | List orders for current client |  |
+| GET | `/foodtruck/{foodTruckId}/{orderId}` | Get single order for a truck |  |
+
+---
+
+## OwnerController (`/api/v1/owner`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add` | Register owner |  |
+| PUT | `/update` | Update owner (current user) |  |
+| DELETE | `/delete` | Delete owner (current user) |  |
+| POST | `/subscribe` | Start subscription payment |  |
+| POST | `/callback/{ownerId}` | Subscription callback (no PID) |  |
+| POST | `/callback/{ownerId}/{paymentId}` | Subscription callback (with PID) |  |
+
+---
+
+## ReviewController (`/api/v1/review`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/add/{foodTruck_id}` | Add review to truck (client) |  |
+| GET | `/get-reviews-by-truck/{foodTruck_id}` | Reviews by truck |  |
+| GET | `/get-reviews-by-client` | Reviews by current client |  |
+| GET | `/get-truck-rating/{foodTruck_id}` | Average rating for truck |  |
+
+---
+
+## WhatsAppController (`/api/v1/whatsApp`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| POST | `/send-text` | Send WhatsApp text |  |
+
+---
+
+## ItemController (`/api/v1/item`)
+| Method | Path | Description | Name |
+|---|---|---|---|
+| GET | `/get/{truckId}` | Items of a truck (owner) |  |
+| POST | `/add/{truckId}` | Add item to truck |  |
+| PUT | `/update/{truckId}/{itemId}` | Update item |  |
+| DELETE | `/delete/{truckId}/{itemId}` | Delete item |  |
+| PUT | `/setAvailable/{truckId}/{itemId}` | Set item available |  |
+| PUT | `/setNotAvailable/{truckId}/{itemId}` | Set item not available |  |
+| PUT | `/price/{truckId}/{itemId}/{newPrice}` | Update item price |  |
+| GET | `/filterByPrice/{truckId}/{min}/{max}` | Filter items by price range |  |
+| POST | `/image/{truckId}/{itemId}` | Upload item image (multipart) |  |
+
