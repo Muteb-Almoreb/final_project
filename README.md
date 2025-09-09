@@ -224,9 +224,9 @@ With clear data modeling, secure payment integration, and location-based service
 ## OwnerController (`/api/v1/owner`)
 | Method | Path | Description | Name |
 |---|---|---|---|
-| POST | `/add` | Register owner | muath |
-| PUT | `/update` | Update owner (current user) | muath |
-| DELETE | `/delete` | Delete owner (current user) | muath |
+| POST | `/add` | Register owner | hassan |
+| PUT | `/update` | Update owner (current user) | hassan |
+| DELETE | `/delete` | Delete owner (current user) | hassan |
 | POST | `/subscribe` | Start subscription payment | hassan |
 | POST | `/callback/{ownerId}` | Subscription callback (no PID) | hassan |
 | POST | `/callback/{ownerId}/{paymentId}` | Subscription callback (with PID) | hassan |
