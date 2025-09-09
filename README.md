@@ -100,6 +100,12 @@ Premium owners gain access to **AI-powered insights and analytics** after subscr
 > It highlights key functionalities like **ordering, reviewing, managing trucks, and subscription handling**.  
 
 ---
+### Figma
+[Figma](https://www.figma.com/design/hvVvEeGbhr3lqANwAzAeNj/System-Flow?node-id=0-1&t=lzGzHO9Y5U0X9ov2-1)
+
+
+
+
 
 ## Enhancements & Creative Improvements
 - **Colorful diagrams**: Entities and relationships are color-coded for clarity (use Mermaid for dynamic visualization).  
